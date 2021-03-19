@@ -1,0 +1,55 @@
+{
+  "name": "@actions/next-version",
+  "version": "0.0.1",
+  "private": true,
+  "description": "This action allows formatting, bumping and updating a package version",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc && ncc build -o dist src/version.ts",
+    "test": "tsc --noEmit && jest --coverage",
+    "lint": "eslint **/*.ts --cache",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vemel/version.git"
+  },
+  "keywords": [
+    "actions",
+    "node",
+    "version",
+    "pep440",
+    "semver"
+  ],
+  "author": "GitHub",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/exec": "^1.0.1",
+    "@actions/io": "^1.0.1",
+    "@renovate/pep440": "^1.0.0",
+    "semver": "^6.3.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.13",
+    "@types/nock": "^11.1.0",
+    "@types/node": "^12.0.4",
+    "@types/semver": "^7.3.4",
+    "@typescript-eslint/eslint-plugin": "^2.7.0",
+    "@typescript-eslint/parser": "^2.7.0",
+    "@zeit/ncc": "^0.20.5",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^23.0.3",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-simple-import-sort": "^5.0.2",
+    "jest": "^24.8.0",
+    "jest-circus": "^24.7.1",
+    "nock": "^11.7.0",
+    "prettier": "^1.19.1",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.7.3"
+  }
+}

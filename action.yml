@@ -1,0 +1,49 @@
+name: "Bump version"
+description: "Format, bump, and update a package version"
+author: "Vlad Emelianov"
+inputs:
+  version:
+    description: Version to bump
+    required: true
+  type:
+    description: "Version type: semver or pep440"
+    default: semver
+    required: false
+  prerelease:
+    description: "Output prerelease versions, true or false"
+    default: "false"
+    required: false
+  prerelease-type:
+    description: "Prerelease type: rc, alpha or beta"
+    default: rc
+    required: false
+  result:
+    description: "Version to set as result: major, minor, patch, micro or prerelease"
+    default: patch
+    required: false
+  path:
+    description: "Paths to version files to update"
+    required: false
+outputs:
+  major:
+    description: "Next major version"
+  minor:
+    description: "Next minor version"
+  patch:
+    description: "Next patch/micro version"
+  micro:
+    description: "Next patch/micro version"
+  prerelease:
+    description: "Next prerelease version"
+  result:
+    description: "Next version specified in output"
+  input:
+    description: "Normalized input version"
+  raw-input:
+    description: "Raw string input"
+runs:
+  using: "node12"
+  main: "dist/index.js"
+branding:
+  icon: "archive"
+  color: "gray-dark"
