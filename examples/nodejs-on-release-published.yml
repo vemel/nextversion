@@ -1,16 +1,7 @@
-name: Node.js - Bump version on demand
+name: Node.js - Bump version on release
 
 on:
-  workflow_dispatch:
-    inputs:
-      release:
-        description: "Release type: major, minor or patch"
-        required: true
-        default: "patch"
-      is-prerelease:
-        description: "Create a Release Candidate: true or false"
-        required: true
-        default: "false"
+  release: [published]
 
 jobs:
   build:
@@ -24,9 +15,7 @@ jobs:
         with:
           version-path: ./package.json
           type: semver
-          result: ${{ github.event.inputs.release }}
-          prerelease: ${{ github.event.inputs.is-prerelease }}
-          prerelease-type: rc
+          result: ${{ github.event.release.tag_name }}
           update-path: |
             ./package.json
             ./src/constants.js

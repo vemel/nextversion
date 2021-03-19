@@ -38,7 +38,7 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 | `prerelease` | `"1.2.3-rc.2"` | Next prerelease version |
 | `result` | `"1.2.3"` | Next version specified in output |
 | `input` | `"1.2.3-rc.1"` | Normalized input version |
-| `raw-input` | `"1.2.3-rc.1"` | Raw input string |
+| `raw-input` | `"v1.2.3-rc.1"` | Raw input string |
 
 
 ## Examples

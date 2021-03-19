@@ -1,16 +1,7 @@
-name: Python - Bump version on demand
+name: Python - Bump version on release
 
 on:
-  workflow_dispatch:
-    inputs:
-      release:
-        description: "Release type: major, minor or micro"
-        required: true
-        default: "micro"
-      is-prerelease:
-        description: "Create a Release Candidate: true or false"
-        required: true
-        default: "false"
+  release: [published]
 
 jobs:
   build:
@@ -24,9 +15,7 @@ jobs:
         with:
           version-path: ./setup.cfg
           type: pep440
-          result: ${{ github.event.inputs.release }}
-          prerelease: ${{ github.event.inputs.is-prerelease }}
-          prerelease-type: rc
+          result: ${{ github.event.release.tag_name }}
           update-path: |
             ./setup.cfg
             ./pyproject.toml
