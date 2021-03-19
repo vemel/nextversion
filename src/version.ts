@@ -43,7 +43,8 @@ function setOutputs(input: string, result: string, results: Results): void {
 function updatePaths(
     oldVersion: string,
     newVersion: string,
-    paths: Array<string>
+    paths: Array<string>,
+    encoding: string
 ): void {
     for (const path of paths) {
         core.debug(`Updating path ${path}`);
@@ -51,14 +52,15 @@ function updatePaths(
             core.warning(`Version file path ${path} does not exist`);
             continue;
         }
-        const data = fs.readFileSync(path, "utf-8");
+        const data = fs.readFileSync(path, encoding);
         if (!data.includes(oldVersion)) {
             core.warning(
                 `Version file path ${path} does not contain version ${oldVersion}`
             );
             continue;
         }
-        fs.writeFileSync(path, data.replace(oldVersion, newVersion));
+        const newData = data.replace(oldVersion, newVersion);
+        fs.writeFileSync(path, newData, encoding);
         core.debug(`Updated version in path ${path} to ${newVersion}`);
     }
 }
@@ -77,6 +79,7 @@ async function run(): Promise<void> {
         );
         const prereleaseType = core.getInput(Inputs.PrereleaseType) || "rc";
         const resultKey = core.getInput(Inputs.Result) || Outputs.Patch;
+        const encoding = core.getInput(Inputs.Encoding) || "utf-8";
         core.debug(`Got input version: ${version}`);
         const results = getResults(
             version,
@@ -87,7 +90,7 @@ async function run(): Promise<void> {
         );
         const result = results[Outputs.Result];
         setOutputs(version, result, results);
-        updatePaths(version, result, paths);
+        updatePaths(version, result, paths, encoding);
     } catch (error) {
         core.setFailed(error.message);
     }

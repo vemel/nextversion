@@ -5,7 +5,8 @@ export enum Inputs {
     PrereleaseType = "prerelease-type",
     ReleaseType = "release-type",
     Result = "result",
-    Path = "path"
+    Path = "path",
+    Encoding = "encoding"
 }
 
 export enum Outputs {

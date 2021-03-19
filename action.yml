@@ -24,6 +24,10 @@ inputs:
   path:
     description: "Paths to version files to update"
     required: false
+  encoding:
+    description: "Encoding for files provided in path"
+    default: utf-8
+    required: false
 outputs:
   major:
     description: "Next major version"

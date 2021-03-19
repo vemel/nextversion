@@ -9,12 +9,13 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 
 ### Inputs
 
-* `version` - Version to bump (required!)
+* `version` - Version to bump (**required**)
 * `type` - Version type: `semver` or `pep440` (default: `semver`)
 * `prerelease` - Output prerelease versions, `true` or `false` (default: `false`)
 * `prerelease-type` - Prerelease type: `rc`, `alpha` or `beta` (default: `rc`)
 * `result` - Version to set as `result`: `major`, `minor`, `patch`, `micro` or `prerelease` (default: `patch`)
 * `path` - Newline-separated paths to version files to update (default: ``)
+* `encoding` - Encoding for files provided in `path` (default: `utf-8`)
 
 ### Outputs
 
@@ -68,6 +69,7 @@ jobs:
           ./setup.cfg
           ./pyproject.toml
           ./mypackage/version.txt
+          ./README.md
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
