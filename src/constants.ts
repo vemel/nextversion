@@ -1,11 +1,12 @@
 export enum Inputs {
     Version = "version",
+    VersionPath = "version-path",
     Type = "type",
     Prerelease = "prerelease",
     PrereleaseType = "prerelease-type",
     ReleaseType = "release-type",
     Result = "result",
-    Path = "path",
+    UpdatePath = "update-path",
     Encoding = "encoding"
 }
 

@@ -1,0 +1,38 @@
+name: Python - Bump version on demand
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Release type: major, minor or micro"
+        required: true
+        default: "micro"
+      is-prerelease:
+        description: "Create a Release Candidate: true or false"
+        required: true
+        default: "false"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Bump version
+        id: version
+        uses: actions/next-version@v1
+        with:
+          version-path: ./setup.cfg
+          type: pep440
+          result: ${{ github.event.inputs.release }}
+          prerelease: ${{ github.event.inputs.is-prerelease }}
+          prerelease-type: rc
+          paths: |
+            ./setup.cfg
+            ./pyproject.toml
+            ./mypackage/version.txt
+            ./README.md
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: "Bump version to ${{ steps.version.outputs.result }}"

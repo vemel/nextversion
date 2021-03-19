@@ -1,80 +1,54 @@
 # Next Version
 
-Format, bump, and update a package version.
+Format, bump, and update a version of Node.js and Python packages
+
+- [Next Version](#next-version)
+  - [Usage](#usage)
+    - [Pre-requisites](#pre-requisites)
+    - [Inputs](#inputs)
+    - [Outputs](#outputs)
+  - [Examples](#examples)
+  - [TODO](#todo)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Usage
-
 ### Pre-requisites
 Create a workflow `.yml` file in your repositories `.github/workflows` directory. An [example workflow](#example-workflow) is available below. For more information, reference the GitHub Help Documentation for [Creating a workflow file](https://help.github.com/en/articles/configuring-a-workflow#creating-a-workflow-file).
 
 ### Inputs
-
-* `version` - Version to bump (**required**)
-* `type` - Version type: `semver` or `pep440` (default: `semver`)
-* `prerelease` - Output prerelease versions, `true` or `false` (default: `false`)
-* `prerelease-type` - Prerelease type: `rc`, `alpha` or `beta` (default: `rc`)
-* `result` - Version to set as `result`: `major`, `minor`, `patch`, `micro` or `prerelease` (default: `patch`)
-* `path` - Newline-separated paths to version files to update (default: ``)
-* `encoding` - Encoding for files provided in `path` (default: `utf-8`)
+| Name | Default | Description |
+| - | - | - |
+| `version` | `"0.0.0"` | Version to bump |
+| `version-path` | `""` | Path to file that contains current version, e.g `package.json`, `pyproject.toml`, `setup.cfg`, `version.txt` |
+| `type` | `"semver"` | Version type: `semver` or `pep440` |
+| `prerelease` | `"false"` | Output prerelease versions, `true` or `false` |
+| `prerelease-type` | `"rc"` | Prerelease type: `rc`, `alpha` or `beta` |
+| `result` | `"patch"` | Version to set as `result`: `major`, `minor`, `patch`, `micro`, `prerelease`, or explicit version |
+| `update-path` | `""` | Newline-separated paths to version files to update |
+| `encoding` | `"utf-8"` | Encoding for files provided in `path` |
 
 ### Outputs
+| Name | Example | Description |
+| - | - | - |
+| `major` | `"2.0.0"` | Next major version |
+| `minor` | `"1.3.0"` | Next minor version |
+| `patch` | `"1.2.3"` | Next patch/micro version |
+| `micro` | `"1.2.3"` | Next patch/micro version |
+| `prerelease` | `"1.2.3-rc.2"` | Next prerelease version |
+| `result` | `"1.2.3"` | Next version specified in output |
+| `input` | `"1.2.3-rc.1"` | Normalized input version |
+| `raw-input` | `"1.2.3-rc.1"` | Raw input string |
 
-* `major` - Next major version
-* `minor` - Next minor version
-* `patch` - Next patch/micro version
-* `micro` - Next patch/micro version
-* `prerelease` - Next prerelease version
-* `result` - Next version specified in output
-* `input` - Normalized input version
-* `raw-input` - Raw string input
 
-### Example workflow
+## Examples
+- [Python: Bump version on demand](examples/python-on-demand.yml)
+- [Node.js: Bump version on demand](examples/nodejs-on-demand.yml)
 
-```yaml
-name: Bump version on demand
-
-on:
-  workflow_dispatch:
-    inputs:
-      release:
-        description: 'Release type: major, minor or patch'
-        required: true
-        default: 'patch'
-      is-prerelease:
-        description: 'Create a Release Candidate: true or false'
-        required: true
-        default: 'false'
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Get current version
-      id: old-version
-      run: |
-        VERSION=`python setup.py --version`
-    - name: Bump version
-      id: version
-      uses: actions/next-version@v1
-      with:
-        version: ${{ steps.old-version.outputs.result }}
-        type: pep440
-        result: ${{ github.event.inputs.release }}
-        prerelease: ${{ github.event.inputs.is-prerelease }}
-        prerelease-type: rc
-        paths: |
-          ./setup.cfg
-          ./pyproject.toml
-          ./mypackage/version.txt
-          ./README.md
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          title: "Bump version to ${{ steps.version.outputs.result }}"
-```
+## TODO
+- [ ] Add postrelease support
+- [ ] Add local version support
+- [ ] Add epoch support
 
 ## Contributing
 We would love for you to contribute to `actions/bump-version`, pull requests are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) for more information.

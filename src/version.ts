@@ -5,6 +5,7 @@ import { Inputs, Outputs } from "./constants";
 import { getResults as getResultsPEP440 } from "./pep440";
 import { getResults as getResultsSemVer } from "./semver";
 import { Results } from "./types";
+import { getVersionFromPath } from "./utils";
 
 function getResults(
     version: string,
@@ -52,7 +53,7 @@ function updatePaths(
             core.warning(`Version file path ${path} does not exist`);
             continue;
         }
-        const data = fs.readFileSync(path, encoding);
+        const data = fs.readFileSync(path, { encoding });
         if (!data.includes(oldVersion)) {
             core.warning(
                 `Version file path ${path} does not contain version ${oldVersion}`
@@ -67,8 +68,18 @@ function updatePaths(
 
 async function run(): Promise<void> {
     try {
-        const version = core.getInput(Inputs.Version, { required: true });
-        const paths = (core.getInput(Inputs.Path) || "")
+        let version = core.getInput(Inputs.Version) || "";
+        const versionPath = core.getInput(Inputs.VersionPath) || "";
+        const encoding = core.getInput(Inputs.Encoding) || "utf-8";
+        if (versionPath.length) {
+            version = getVersionFromPath(versionPath, encoding);
+            core.debug(`Extracted version ${version} from ${versionPath}`);
+        }
+        if (!version.length) {
+            throw new Error(`Invalid input version: ${version}`);
+        }
+
+        const paths = (core.getInput(Inputs.UpdatePath) || "")
             .split(/\r?\n/)
             .map(x => x.trim());
         const versionType = (
@@ -79,7 +90,6 @@ async function run(): Promise<void> {
         );
         const prereleaseType = core.getInput(Inputs.PrereleaseType) || "rc";
         const resultKey = core.getInput(Inputs.Result) || Outputs.Patch;
-        const encoding = core.getInput(Inputs.Encoding) || "utf-8";
         core.debug(`Got input version: ${version}`);
         const results = getResults(
             version,

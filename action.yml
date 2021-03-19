@@ -4,7 +4,12 @@ author: "Vlad Emelianov"
 inputs:
   version:
     description: Version to bump
-    required: true
+    default: "0.0.0"
+    required: false
+  version-path:
+    description: Path to file that contains current version. Supports package.json, pyproject.toml, setup.cfg, version.txt
+    default: ""
+    required: false
   type:
     description: "Version type: semver or pep440"
     default: semver
@@ -21,8 +26,9 @@ inputs:
     description: "Version to set as result: input, major, minor, patch, micro, prerelease or exact version"
     default: patch
     required: false
-  path:
+  update-path:
     description: "Paths to version files to update"
+    default: ""
     required: false
   encoding:
     description: "Encoding for files provided in path"

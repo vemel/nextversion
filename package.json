@@ -2,14 +2,15 @@
   "name": "@actions/next-version",
   "version": "0.0.1",
   "private": true,
-  "description": "Format, bump, and update a package version",
+  "description": "Format, bump, and update a version of Node.js and Python packages",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc && ncc build -o dist src/version.ts",
+    "build": "tsc && ncc build -o dist src/version.ts && npm run uglify",
     "test": "tsc --noEmit && jest --coverage",
     "lint": "eslint **/*.ts --cache",
     "format": "prettier --write **/*.ts",
-    "format-check": "prettier --check **/*.ts"
+    "format-check": "prettier --check **/*.ts",
+    "uglify": "uglifyjs dist/index.js -cm > dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -30,7 +31,7 @@
     "semver": "^7.3.4"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.13",
+    "@types/jest": "^26.0.21",
     "@types/nock": "^11.1.0",
     "@types/node": "^12.0.4",
     "@types/semver": "^7.3.4",
@@ -43,11 +44,12 @@
     "eslint-plugin-jest": "^23.0.3",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-simple-import-sort": "^5.0.2",
-    "jest": "^24.8.0",
-    "jest-circus": "^24.7.1",
+    "jest": "^26.6.3",
+    "jest-circus": "^26.6.3",
     "nock": "^11.7.0",
     "prettier": "^1.19.1",
-    "ts-jest": "^24.0.2",
-    "typescript": "^3.7.3"
+    "ts-jest": "^26.5.4",
+    "typescript": "^3.7.3",
+    "uglify-js": "^3.13.1"
   }
 }
