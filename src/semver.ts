@@ -56,6 +56,7 @@ export function getResults(
         [Outputs.Major]: version,
         [Outputs.Minor]: version,
         [Outputs.Patch]: version,
+        [Outputs.Micro]: version,
         [Outputs.Prerelease]: version,
         [Outputs.Result]: version
     };
@@ -87,6 +88,7 @@ export function getResults(
             prereleaseType
         );
     }
+    results[Outputs.Micro] = results[Outputs.Patch];
     if (Object.keys(results).includes(resultKey)) {
         results[Outputs.Result] = results[resultKey];
     } else {

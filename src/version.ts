@@ -33,7 +33,7 @@ function setOutputs(input: string, result: string, results: Results): void {
     core.setOutput(Outputs.Major, results[Outputs.Major]);
     core.setOutput(Outputs.Minor, results[Outputs.Minor]);
     core.setOutput(Outputs.Patch, results[Outputs.Patch]);
-    core.setOutput(Outputs.Micro, results[Outputs.Patch]);
+    core.setOutput(Outputs.Micro, results[Outputs.Micro]);
     core.setOutput(Outputs.Prerelease, results[Outputs.Prerelease]);
     core.setOutput(Outputs.Result, results[Outputs.Result]);
     core.setOutput(Outputs.Input, results[Outputs.Input]);

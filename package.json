@@ -2,7 +2,7 @@
   "name": "@actions/next-version",
   "version": "0.0.1",
   "private": true,
-  "description": "This action allows formatting, bumping and updating a package version",
+  "description": "Format, bump, and update a package version",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc && ncc build -o dist src/version.ts",
@@ -26,10 +26,8 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/exec": "^1.0.1",
-    "@actions/io": "^1.0.1",
     "@renovate/pep440": "^1.0.0",
-    "semver": "^6.3.0"
+    "semver": "^7.3.4"
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",

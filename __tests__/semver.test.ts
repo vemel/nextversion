@@ -37,25 +37,31 @@ test("bump release", async () => {
 });
 
 test("get results", async () => {
-    expect(getResults("1.2.3", true, "rc")).toStrictEqual({
+    expect(getResults("1.2.3", true, "rc", "patch")).toStrictEqual({
         input: "1.2.3",
         major: "2.0.0-rc.1",
         minor: "1.3.0-rc.1",
         patch: "1.2.4-rc.1",
-        prerelease: "1.2.4-rc.1"
+        micro: "1.2.4-rc.1",
+        prerelease: "1.2.4-rc.1",
+        result: "1.2.4-rc.1"
     });
-    expect(getResults("1.2.3", false, "rc")).toStrictEqual({
+    expect(getResults("1.2.3", false, "rc", "3.4.5")).toStrictEqual({
         input: "1.2.3",
         major: "2.0.0",
         minor: "1.3.0",
         patch: "1.2.4",
-        prerelease: "1.2.4-rc.1"
+        micro: "1.2.4",
+        prerelease: "1.2.4-rc.1",
+        result: "3.4.5"
     });
-    expect(getResults("v1.2.3-rc.1", false, "rc")).toStrictEqual({
+    expect(getResults("v1.2.3-rc.1", false, "rc", "input")).toStrictEqual({
         input: "1.2.3-rc.1",
         major: "2.0.0",
         minor: "1.3.0",
         patch: "1.2.3",
-        prerelease: "1.2.3-rc.2"
+        micro: "1.2.3",
+        prerelease: "1.2.3-rc.2",
+        result: "1.2.3-rc.1"
     });
 });
