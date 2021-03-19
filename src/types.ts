@@ -6,4 +6,5 @@ export interface Results {
     [Outputs.Patch]: string;
     [Outputs.Prerelease]: string;
     [Outputs.Input]: string;
+    [Outputs.Result]: string;
 }

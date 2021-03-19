@@ -10,12 +10,23 @@ function getResults(
     version: string,
     versionType: string,
     outputPrerelease: boolean,
-    prereleaseType: string
+    prereleaseType: string,
+    resultKey: string
 ): Results {
     if (versionType == "pep440") {
-        return getResultsPEP440(version, outputPrerelease, prereleaseType);
+        return getResultsPEP440(
+            version,
+            outputPrerelease,
+            prereleaseType,
+            resultKey
+        );
     }
-    return getResultsSemVer(version, outputPrerelease, prereleaseType);
+    return getResultsSemVer(
+        version,
+        outputPrerelease,
+        prereleaseType,
+        resultKey
+    );
 }
 
 function setOutputs(input: string, result: string, results: Results): void {
@@ -24,7 +35,7 @@ function setOutputs(input: string, result: string, results: Results): void {
     core.setOutput(Outputs.Patch, results[Outputs.Patch]);
     core.setOutput(Outputs.Micro, results[Outputs.Patch]);
     core.setOutput(Outputs.Prerelease, results[Outputs.Prerelease]);
-    core.setOutput(Outputs.Result, result);
+    core.setOutput(Outputs.Result, results[Outputs.Result]);
     core.setOutput(Outputs.Input, results[Outputs.Input]);
     core.setOutput(Outputs.RawInput, input);
 }
@@ -71,9 +82,10 @@ async function run(): Promise<void> {
             version,
             versionType,
             outputPrerelease,
-            prereleaseType
+            prereleaseType,
+            resultKey
         );
-        const result = results[resultKey];
+        const result = results[Outputs.Result];
         setOutputs(version, result, results);
         updatePaths(version, result, paths);
     } catch (error) {

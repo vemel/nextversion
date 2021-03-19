@@ -18,7 +18,7 @@ inputs:
     default: rc
     required: false
   result:
-    description: "Version to set as result: major, minor, patch, micro or prerelease"
+    description: "Version to set as result: input, major, minor, patch, micro, prerelease or exact version"
     default: patch
     required: false
   path:

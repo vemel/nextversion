@@ -48,14 +48,16 @@ export function bumpRelease(
 export function getResults(
     version: string,
     outputPrerelease: boolean,
-    prereleaseType: string
+    prereleaseType: string,
+    resultKey: string
 ): Results {
     const results = {
         [Outputs.Input]: clean(version),
         [Outputs.Major]: version,
         [Outputs.Minor]: version,
         [Outputs.Patch]: version,
-        [Outputs.Prerelease]: version
+        [Outputs.Prerelease]: version,
+        [Outputs.Result]: version
     };
 
     if (outputPrerelease) {
@@ -84,6 +86,11 @@ export function getResults(
             "prerelease",
             prereleaseType
         );
+    }
+    if (Object.keys(results).includes(resultKey)) {
+        results[Outputs.Result] = results[resultKey];
+    } else {
+        results[Outputs.Result] = clean(resultKey);
     }
     return results;
 }

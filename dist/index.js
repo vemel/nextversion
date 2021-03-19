@@ -276,13 +276,14 @@ function bumpRelease(version, release, preReleaseIdentifier) {
     return result;
 }
 exports.bumpRelease = bumpRelease;
-function getResults(version, outputPrerelease, prereleaseType) {
+function getResults(version, outputPrerelease, prereleaseType, resultKey) {
     const results = {
         [constants_1.Outputs.Input]: new semver_1.SemVer(version).format(),
         [constants_1.Outputs.Major]: version,
         [constants_1.Outputs.Minor]: version,
         [constants_1.Outputs.Patch]: version,
-        [constants_1.Outputs.Prerelease]: version
+        [constants_1.Outputs.Prerelease]: version,
+        [constants_1.Outputs.Result]: version
     };
     if (outputPrerelease) {
         results[constants_1.Outputs.Major] = bumpPrerelease(version, "premajor", prereleaseType);
@@ -295,6 +296,12 @@ function getResults(version, outputPrerelease, prereleaseType) {
         results[constants_1.Outputs.Minor] = bumpRelease(version, "minor", prereleaseType);
         results[constants_1.Outputs.Patch] = bumpRelease(version, "patch", prereleaseType);
         results[constants_1.Outputs.Prerelease] = bumpRelease(version, "prerelease", prereleaseType);
+    }
+    if (Object.keys(results).includes(resultKey)) {
+        results[constants_1.Outputs.Result] = results[resultKey];
+    }
+    else {
+        results[constants_1.Outputs.Result] = new semver_1.SemVer(resultKey).format();
     }
     return results;
 }
@@ -690,11 +697,11 @@ const fs_1 = __importDefault(__webpack_require__(747));
 const constants_1 = __webpack_require__(211);
 const pep440_1 = __webpack_require__(993);
 const semver_1 = __webpack_require__(7);
-function getResults(version, versionType, outputPrerelease, prereleaseType) {
+function getResults(version, versionType, outputPrerelease, prereleaseType, resultKey) {
     if (versionType == "pep440") {
-        return pep440_1.getResults(version, outputPrerelease, prereleaseType);
+        return pep440_1.getResults(version, outputPrerelease, prereleaseType, resultKey);
     }
-    return semver_1.getResults(version, outputPrerelease, prereleaseType);
+    return semver_1.getResults(version, outputPrerelease, prereleaseType, resultKey);
 }
 function setOutputs(input, result, results) {
     core.setOutput(constants_1.Outputs.Major, results[constants_1.Outputs.Major]);
@@ -702,7 +709,7 @@ function setOutputs(input, result, results) {
     core.setOutput(constants_1.Outputs.Patch, results[constants_1.Outputs.Patch]);
     core.setOutput(constants_1.Outputs.Micro, results[constants_1.Outputs.Patch]);
     core.setOutput(constants_1.Outputs.Prerelease, results[constants_1.Outputs.Prerelease]);
-    core.setOutput(constants_1.Outputs.Result, result);
+    core.setOutput(constants_1.Outputs.Result, results[constants_1.Outputs.Result]);
     core.setOutput(constants_1.Outputs.Input, results[constants_1.Outputs.Input]);
     core.setOutput(constants_1.Outputs.RawInput, input);
 }
@@ -732,10 +739,10 @@ function run() {
             const versionType = (core.getInput(constants_1.Inputs.Type) || "semver").toLowerCase();
             const outputPrerelease = ![false, "false", "no"].includes((core.getInput(constants_1.Inputs.Prerelease) || "false").toLowerCase());
             const prereleaseType = core.getInput(constants_1.Inputs.PrereleaseType) || "rc";
-            const outputKey = core.getInput(constants_1.Inputs.Output) || constants_1.Outputs.Patch;
+            const resultKey = core.getInput(constants_1.Inputs.Result) || constants_1.Outputs.Patch;
             core.debug(`Got input version: ${version}`);
-            const results = getResults(version, versionType, outputPrerelease, prereleaseType);
-            const result = results[outputKey];
+            const results = getResults(version, versionType, outputPrerelease, prereleaseType, resultKey);
+            const result = results[constants_1.Outputs.Result];
             setOutputs(version, result, results);
             updatePaths(version, result, paths);
         }
@@ -1639,7 +1646,7 @@ var Inputs;
     Inputs["Prerelease"] = "prerelease";
     Inputs["PrereleaseType"] = "prerelease-type";
     Inputs["ReleaseType"] = "release-type";
-    Inputs["Output"] = "output";
+    Inputs["Result"] = "result";
     Inputs["Path"] = "path";
 })(Inputs = exports.Inputs || (exports.Inputs = {}));
 var Outputs;
@@ -12969,13 +12976,14 @@ function bumpRelease(version, release, preReleaseIdentifier) {
     return result;
 }
 exports.bumpRelease = bumpRelease;
-function getResults(version, outputPrerelease, prereleaseType) {
+function getResults(version, outputPrerelease, prereleaseType, resultKey) {
     const results = {
         [constants_1.Outputs.Input]: pep440_1.clean(version),
         [constants_1.Outputs.Major]: version,
         [constants_1.Outputs.Minor]: version,
         [constants_1.Outputs.Patch]: version,
-        [constants_1.Outputs.Prerelease]: version
+        [constants_1.Outputs.Prerelease]: version,
+        [constants_1.Outputs.Result]: version
     };
     if (outputPrerelease) {
         results[constants_1.Outputs.Major] = bumpPrerelease(version, "premajor", prereleaseType);
@@ -12988,6 +12996,12 @@ function getResults(version, outputPrerelease, prereleaseType) {
         results[constants_1.Outputs.Minor] = bumpRelease(version, "minor", prereleaseType);
         results[constants_1.Outputs.Patch] = bumpRelease(version, "patch", prereleaseType);
         results[constants_1.Outputs.Prerelease] = bumpRelease(version, "prerelease", prereleaseType);
+    }
+    if (Object.keys(results).includes(resultKey)) {
+        results[constants_1.Outputs.Result] = results[resultKey];
+    }
+    else {
+        results[constants_1.Outputs.Result] = pep440_1.clean(resultKey);
     }
     return results;
 }
