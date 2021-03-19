@@ -20,3 +20,8 @@ export enum Outputs {
     Prerelease = "prerelease",
     Result = "result"
 }
+
+export enum VersionType {
+    PEP440 = "pep440",
+    SemVer = "semver"
+}

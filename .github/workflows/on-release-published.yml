@@ -8,19 +8,19 @@ on:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Bump version
         id: version
-        uses: actions/next-version@v1
+        uses: actions/next-version@main
         with:
           version-path: ./package.json
           type: semver
-          result: ${{ github.event.release.tag_name }}
+          result: ${{ github.event.payload.tag_name }}
           update-path: |
             ./package.json
-            ./src/constants.js
             ./README.md
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3

@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import fs from "fs";
 
-import { Inputs, Outputs } from "./constants";
+import { Inputs, Outputs, VersionType } from "./constants";
 import { getResults as getResultsPEP440 } from "./pep440";
 import { getResults as getResultsSemVer } from "./semver";
 import { Results } from "./types";
@@ -14,7 +14,7 @@ function getResults(
     prereleaseType: string,
     resultKey: string
 ): Results {
-    if (versionType == "pep440") {
+    if (versionType == VersionType.PEP440) {
         return getResultsPEP440(
             version,
             outputPrerelease,
@@ -41,29 +41,27 @@ function setOutputs(input: string, result: string, results: Results): void {
     core.setOutput(Outputs.RawInput, input);
 }
 
-function updatePaths(
+function updatePath(
     oldVersion: string,
     newVersion: string,
-    paths: Array<string>,
+    path: string,
     encoding: string
 ): void {
-    for (const path of paths) {
-        core.debug(`Updating path ${path}`);
-        if (!fs.existsSync(path)) {
-            core.warning(`Version file path ${path} does not exist`);
-            continue;
-        }
-        const data = fs.readFileSync(path, { encoding });
-        if (!data.includes(oldVersion)) {
-            core.warning(
-                `Version file path ${path} does not contain version ${oldVersion}`
-            );
-            continue;
-        }
-        const newData = data.replace(oldVersion, newVersion);
-        fs.writeFileSync(path, newData, encoding);
-        core.debug(`Updated version in path ${path} to ${newVersion}`);
+    core.debug(`Updating path ${path}`);
+    if (!fs.existsSync(path)) {
+        core.warning(`Version file path ${path} does not exist`);
+        return;
     }
+    const data = fs.readFileSync(path, { encoding });
+    if (!data.includes(oldVersion)) {
+        core.warning(
+            `Version file path ${path} does not contain version ${oldVersion}`
+        );
+        return;
+    }
+    const newData = data.replace(oldVersion, newVersion);
+    fs.writeFileSync(path, newData, encoding);
+    core.debug(`Updated version in path ${path} to ${newVersion}`);
 }
 
 async function run(): Promise<void> {
@@ -79,11 +77,11 @@ async function run(): Promise<void> {
             throw new Error(`Invalid input version: ${version}`);
         }
 
-        const paths = (core.getInput(Inputs.UpdatePath) || "")
+        const updatePaths = (core.getInput(Inputs.UpdatePath) || "")
             .split(/\r?\n/)
             .map(x => x.trim());
         const versionType = (
-            core.getInput(Inputs.Type) || "semver"
+            core.getInput(Inputs.Type) || VersionType.SemVer
         ).toLowerCase();
         const outputPrerelease = ![false, "false", "no"].includes(
             (core.getInput(Inputs.Prerelease) || "false").toLowerCase()
@@ -100,7 +98,9 @@ async function run(): Promise<void> {
         );
         const result = results[Outputs.Result];
         setOutputs(version, result, results);
-        updatePaths(version, result, paths, encoding);
+        for (const path of updatePaths) {
+            updatePath(version, result, path, encoding);
+        }
     } catch (error) {
         core.setFailed(error.message);
     }

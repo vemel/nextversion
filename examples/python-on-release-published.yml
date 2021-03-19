@@ -1,10 +1,12 @@
 name: Python - Bump version on release
 
 on:
-  release: [published]
+  release:
+    types:
+      - published
 
 jobs:
-  build:
+  bump-version:
     runs-on: ubuntu-latest
 
     steps:

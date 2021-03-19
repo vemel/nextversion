@@ -1,6 +1,8 @@
 # Next Version
 
-Format, bump, and update a version of Node.js and Python packages
+Format, bump, and update a version of Node.js and Python packages.
+
+Current version: 0.0.1
 
 - [Next Version](#next-version)
   - [Usage](#usage)
@@ -43,7 +45,9 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 
 ## Examples
 - [Python: Bump version on demand](examples/python-on-demand.yml)
+- [Python: Bump version on release published](examples/python-on-release-published.yml)
 - [Node.js: Bump version on demand](examples/nodejs-on-demand.yml)
+- [Node.js: Bump version on release published](examples/pnodejs-on-release-published.yml)
 
 ## TODO
 - [ ] Add postrelease support
