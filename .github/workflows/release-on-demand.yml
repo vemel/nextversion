@@ -23,7 +23,8 @@ jobs:
       - name: Get notes from CHANGELOG.md
         id: changelog
         run: |
-          NOTES=`logchange get unreleased | logchange format`
+          NOTES=$(logchange get unreleased | logchange format)
+          echo $NOTES
           echo "::set-output name=unreleased::${NOTES}"
       - name: Get new auto version
         id: auto-version
