@@ -25,6 +25,9 @@ jobs:
         run: |
           NOTES=$(logchange get unreleased | logchange format)
           echo $NOTES
+          NOTES="${NOTES//'%'/'%25'}"
+          NOTES="${NOTES//$'\n'/'%0A'}"
+          NOTES="${NOTES//$'\r'/'%0D'}"
           echo "::set-output name=unreleased::${NOTES}"
       - name: Get new auto version
         id: auto-version
