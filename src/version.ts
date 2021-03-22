@@ -64,11 +64,23 @@ function updatePath(
     core.debug(`Updated version in path ${path} to ${newVersion}`);
 }
 
+function getResultKeyFromNotes(notes: string): string {
+    if (notes.match(/^### Removed$/im)) return Outputs.Major;
+    if (notes.match(/^### Added$/im)) return Outputs.Minor;
+    if (notes.match(/^### Changed$/im)) return Outputs.Minor;
+    return Outputs.Patch;
+}
+
 async function run(): Promise<void> {
     try {
         let version = core.getInput(Inputs.Version) || "";
         const versionPath = core.getInput(Inputs.VersionPath) || "";
+        const releaseNotes = core.getInput(Inputs.ReleaseNotes) || "";
         const encoding = core.getInput(Inputs.Encoding) || "utf-8";
+        const versionType = (
+            core.getInput(Inputs.Type) || VersionType.SemVer
+        ).toLowerCase();
+        core.error(releaseNotes);
         if (versionPath.length) {
             version = getVersionFromPath(versionPath, encoding);
             core.debug(`Extracted version ${version} from ${versionPath}`);
@@ -79,16 +91,16 @@ async function run(): Promise<void> {
 
         const updatePaths = (core.getInput(Inputs.UpdatePath) || "")
             .split(/\r?\n/)
-            .map(x => x.trim());
-        const versionType = (
-            core.getInput(Inputs.Type) || VersionType.SemVer
-        ).toLowerCase();
+            .map(x => x.trim())
+            .filter(x => x.length);
         const outputPrerelease = ![false, "false", "no"].includes(
             (core.getInput(Inputs.Prerelease) || "false").toLowerCase()
         );
         const prereleaseType = core.getInput(Inputs.PrereleaseType) || "rc";
-        const resultKey = core.getInput(Inputs.Result) || Outputs.Patch;
+        const resultKey =
+            core.getInput(Inputs.Result) || getResultKeyFromNotes(releaseNotes);
         core.debug(`Got input version: ${version}`);
+        core.debug(`Result version set to ${resultKey}`);
         const results = getResults(
             version,
             versionType,

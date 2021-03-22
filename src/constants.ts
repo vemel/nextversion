@@ -7,7 +7,8 @@ export enum Inputs {
     ReleaseType = "release-type",
     Result = "result",
     UpdatePath = "update-path",
-    Encoding = "encoding"
+    Encoding = "encoding",
+    ReleaseNotes = "release-notes"
 }
 
 export enum Outputs {

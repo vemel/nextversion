@@ -26,6 +26,10 @@ inputs:
     description: "Version to set as result: input, major, minor, patch, micro, prerelease or exact version"
     default: patch
     required: false
+  release-notes:
+    description: Set result based on release notes in Keep a Changelog format
+    default: ""
+    required: false
   update-path:
     description: "Paths to version files to update"
     default: ""

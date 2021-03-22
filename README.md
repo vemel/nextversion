@@ -27,6 +27,7 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 | `prerelease` | `"false"` | Output prerelease versions, `true` or `false` |
 | `prerelease-type` | `"rc"` | Prerelease type: `rc`, `alpha` or `beta` |
 | `result` | `"patch"` | Version to set as `result`: `major`, `minor`, `patch`, `micro`, `prerelease`, or explicit version |
+| `release-notes` | `""` | Set `result` based on release notes in [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format |
 | `update-path` | `""` | Newline-separated paths to version files to update |
 | `encoding` | `"utf-8"` | Encoding for files provided in `path` |
 
