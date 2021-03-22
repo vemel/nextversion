@@ -24,18 +24,13 @@ jobs:
         id: changelog
         run: |
           NOTES=$(logchange get unreleased | logchange format)
-          echo $NOTES
-          NOTES="${NOTES//'%'/'%25'}"
-          NOTES="${NOTES//$'\n'/'%0A'}"
-          NOTES="${NOTES//$'\r'/'%0D'}"
           echo "::set-output name=unreleased::${NOTES}"
       - name: Get new auto version
         id: auto-version
         uses: vemel/nextversion@main
-        env:
-          INPUT_RELEASE-NOTES: ${{ steps.changelog.outputs.unreleased }}
         with:
           version-path: ./package.json
+          release-notes: ${{ toJSON(steps.changelog.outputs.unreleased) }}
           type: semver
           prerelease: ${{ github.event.inputs.is-prerelease }}
           prerelease-type: rc
@@ -47,26 +42,28 @@ jobs:
           script: |
             const inputVersion = ${{ github.event.inputs.is-prerelease }};
             if (inputVersion && inputVersion !== "auto") return inputVersion;
-            return ${{ steps.auto-version.outputs.result }};
+            return ${{ toJSON(steps.auto-version.outputs.result) }};
       - name: Update version
         uses: vemel/nextversion@main
         with:
           version-path: ./package.json
           type: semver
-          result: ${{ steps.version.outputs.result }}
+          result: ${{ toJSON(steps.version.outputs.result) }}
           update-path: |
             ./package.json
             ./README.md
       - name: Update changelog
         run: |
-          logchange release ${{ steps.version.outputs.result }}
+          logchange release ${{ toJSON(steps.version.outputs.result) }}
       - name: Commit changes
         run: |
+          VERSION=${{ toJSON(steps.version.outputs.result) }}
+          BRANCH="release/${{ steps.version.outputs.result }}"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git checkout -b release/${{ steps.version.outputs.result }}
-          git commit -am "Bump version to ${{ steps.version.outputs.result }}"
-          git tag ${{ steps.version.outputs.result }}
+          git checkout -b ${BRANCH}
+          git commit -am "Bump version to $VERSION"
+          git tag $VERSION
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
@@ -77,3 +74,4 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           title: "Bump version to ${{ steps.version.outputs.result }}"
+          body: ${{ toJSON(steps.changelog.outputs.unreleased) }}
