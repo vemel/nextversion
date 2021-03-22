@@ -51,8 +51,7 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 
 ## TODO
 - [ ] Add postrelease support
-- [ ] Add local version support
-- [ ] Add epoch support
+- [ ] Add min result version parameter
 
 ## Contributing
 We would love for you to contribute to `actions/bump-version`, pull requests are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
