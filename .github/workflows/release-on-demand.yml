@@ -44,6 +44,7 @@ jobs:
             if (inputVersion) return inputVersion;
             return ${{ steps.auto-version.outputs.result }};
       - name: Update version
+        uses: vemel/nextversion@main
         with:
           version-path: ./package.json
           type: semver
