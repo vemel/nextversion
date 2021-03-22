@@ -4,16 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version. Laave empty for auto"
+        description: "Release version. Leave auto to get version from unreleased notes"
         required: true
-        default: ""
+        default: "auto"
       is-prerelease:
         description: "Create a Release Candidate for auto version: true or false"
         required: true
         default: "false"
 
 jobs:
-  bump-version:
+  release-new-version:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,7 +41,7 @@ jobs:
           result-encoding: string
           script: |
             const inputVersion = ${{ github.event.inputs.is-prerelease }};
-            if (inputVersion) return inputVersion;
+            if (inputVersion && inputVersion !== "auto") return inputVersion;
             return ${{ steps.auto-version.outputs.result }};
       - name: Update version
         uses: vemel/nextversion@main
