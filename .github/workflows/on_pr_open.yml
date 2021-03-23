@@ -33,7 +33,6 @@ jobs:
           script: |
             const labels = ${{ steps.labels.outputs.result }}
             console.log('Assigned labels', labels)
-
             await github.issues.replaceAllLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
