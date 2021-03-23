@@ -40,8 +40,8 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 | `build` | `"1.2.3-rc.1+1"` | `"1.2.3rc1+1"` | Next build/local version |
 | `postrelease` | `"1.2.4"` | `"1.2.3.post1"` | Next postrelease version (pep440 only) |
 | `result` | `"1.2.3"` | `"1.2.3"` | Next version specified in output |
-| `input` | `"1.2.3-rc.1"` `"1.2.3rc1"` | | Normalized input version |
-| `raw-input` | `"v1.2.3-rc.1"` `"v1.2.3rc1"` | | Raw input string |
+| `input` | `"1.2.3-rc.1"` | `"1.2.3rc1"` | | Normalized input version |
+| `raw-input` | `"v1.2.3-rc.1"` | `"v1.2.3rc1"` | | Raw input string |
 
 
 ## Examples
