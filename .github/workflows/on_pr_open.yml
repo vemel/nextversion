@@ -1,0 +1,42 @@
+name: Assign PullRequest labels
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Analyze PR notes
+        id: notes
+        uses: vemel/nextchange@main
+        with:
+          save: "false"
+          release: "0.0.0"
+          set: ${{ toJSON(github.event.payload.body) }}
+      - name: Build labels
+        uses: actions/github-script@v3
+        id: labels
+        with:
+          script: |
+            const managedLabels = ['patch', 'minor', 'major'];
+            console.log(context);
+            console.log(${{ toJSON(github.event) }});
+            const labels = context.issue.labels.map(data => data.name).filter(label => !managedLabels.includes(label));
+            const label = context.steps.notes.outputs.label;
+            console.log([...labels, label]);
+            return [...labels, label];
+      - name: Assign labels
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const labels = ${{ steps.labels.outputs.result }}
+            console.log('Assigned labels', labels)
+
+            await github.issues.replaceAllLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: labels
+            })
