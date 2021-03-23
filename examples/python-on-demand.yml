@@ -3,14 +3,14 @@ name: Python - Bump version on demand
 on:
   workflow_dispatch:
     inputs:
-      release:
-        description: "Release type: major, minor or micro"
+      bump:
+        description: "Release bump: major, minor or micro"
         required: true
         default: "micro"
-      is-prerelease:
-        description: "Create a Release Candidate: true or false"
+      release:
+        description: "Release type: stable, rc, alpha, or beta"
         required: true
-        default: "false"
+        default: "stable"
 
 jobs:
   bump-version:
@@ -22,16 +22,20 @@ jobs:
         id: version
         uses: vemel/nextversion@main
         with:
-          version-path: ./setup.cfg
+          path: ./setup.cfg
           type: pep440
-          result: ${{ github.event.inputs.release }}
-          prerelease: ${{ github.event.inputs.is-prerelease }}
-          prerelease-type: rc
-          update-path: |
+          result: ${{ github.event.inputs.bump }}
+          release: ${{ github.event.inputs.release }}
+          update: |
             ./setup.cfg
             ./pyproject.toml
             ./mypackage/version.txt
             ./README.md
+      - name: Update CHANGELOG.md
+        id: version
+        uses: vemel/nextchange@main
+        with:
+          release: ${{ steps.version.outputs.result }}
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:

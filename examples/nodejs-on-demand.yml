@@ -3,14 +3,14 @@ name: Node.js - Bump version on demand
 on:
   workflow_dispatch:
     inputs:
+      bump:
+        description: "Release bump: major, minor or micro"
+        required: true
+        default: "micro"
       release:
-        description: "Release type: major, minor or patch"
+        description: "Release type: stable, rc, alpha, or beta"
         required: true
-        default: "patch"
-      is-prerelease:
-        description: "Create a Release Candidate: true or false"
-        required: true
-        default: "false"
+        default: "stable"
 
 jobs:
   bump-version:
@@ -22,15 +22,19 @@ jobs:
         id: version
         uses: vemel/nextversion@main
         with:
-          version-path: ./package.json
+          path: ./package.json
           type: semver
-          result: ${{ github.event.inputs.release }}
-          prerelease: ${{ github.event.inputs.is-prerelease }}
-          prerelease-type: rc
-          update-path: |
+          result: ${{ github.event.inputs.bump }}
+          release: ${{ github.event.inputs.release }}
+          update: |
             ./package.json
             ./src/constants.js
             ./README.md
+      - name: Update CHANGELOG.md
+        id: version
+        uses: vemel/nextchange@main
+        with:
+          release: ${{ steps.version.outputs.result }}
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:

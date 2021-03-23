@@ -15,13 +15,18 @@ jobs:
         id: version
         uses: vemel/nextversion@main
         with:
-          version-path: ./package.json
+          path: ./package.json
           type: semver
           result: ${{ github.event.payload.tag_name }}
-          update-path: |
+          update: |
             ./package.json
             ./src/constants.js
             ./README.md
+      - name: Update CHANGELOG.md
+        id: version
+        uses: vemel/nextchange@main
+        with:
+          release: ${{ steps.version.outputs.result }}
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
