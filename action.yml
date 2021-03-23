@@ -2,36 +2,28 @@ name: "Next Version"
 description: "Format, bump, and update a package version"
 author: "Vlad Emelianov"
 inputs:
-  version:
-    description: Version to bump
-    default: "0.0.0"
-    required: false
-  version-path:
+  path:
     description: Path to file that contains current version. Supports package.json, pyproject.toml, setup.cfg, version.txt
     default: ""
+    required: false
+  version:
+    description: Current version to bump, use path isntead if possible
+    default: "0.0.0"
     required: false
   type:
     description: "Version type: semver or pep440"
     default: semver
     required: false
-  prerelease:
-    description: "Output prerelease versions, true or false"
-    default: "false"
-    required: false
-  prerelease-type:
-    description: "Prerelease type: rc, alpha or beta"
-    default: rc
+  release:
+    description: "Release type: stable, rc, alpha, or beta"
+    default: stable
     required: false
   result:
     description: "Version to set as result: input, major, minor, patch, micro, prerelease or exact version"
     default: patch
     required: false
-  release-notes:
-    description: Set result based on release notes in Keep a Changelog format
-    default: ""
-    required: false
-  update-path:
-    description: "Paths to version files to update"
+  update:
+    description: "Newline-separated paths to version files to update"
     default: ""
     required: false
   encoding:

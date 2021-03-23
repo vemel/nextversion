@@ -21,14 +21,12 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 ### Inputs
 | Name | Default | Description |
 | - | - | - |
-| `version` | `"0.0.0"` | Version to bump |
-| `version-path` | `""` | Path to file that contains current version, e.g `package.json`, `pyproject.toml`, `setup.cfg`, `version.txt` |
+| `path` | `""` | Path to file that contains current version, e.g `package.json`, `pyproject.toml`, `setup.cfg`, `version.txt` |
+| `version` | `"0.0.0"` | Current version to bump, use `path` isntead if possible |
 | `type` | `"semver"` | Version type: `semver` or `pep440` |
-| `prerelease` | `"false"` | Output prerelease versions, `true` or `false` |
-| `prerelease-type` | `"rc"` | Prerelease type: `rc`, `alpha` or `beta` |
+| `release` | `"stable"` | Release type: `stable` `rc`, `alpha` or `beta` |
 | `result` | `"patch"` | Version to set as `result`: `major`, `minor`, `patch`, `micro`, `prerelease`, or explicit version |
-| `release-notes` | `""` | Set `result` based on release notes in [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format |
-| `update-path` | `""` | Newline-separated paths to version files to update |
+| `update` | `""` | Newline-separated paths to version files to update |
 | `encoding` | `"utf-8"` | Encoding for files provided in `path` |
 
 ### Outputs

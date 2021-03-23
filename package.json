@@ -5,7 +5,7 @@
   "description": "Format, bump, and update a version of Node.js and Python packages",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc && ncc build -o dist src/index.ts && npm run uglify",
+    "build": "tsc && ncc build -o dist src/index.ts",
     "test": "jest --coverage",
     "lint": "eslint **/*.ts --cache",
     "format": "prettier --write **/*.ts",
