@@ -17,20 +17,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: |
-          pip install logchange
       - name: Get notes from CHANGELOG.md
         id: changelog
-        run: |
-          NOTES=$(logchange get unreleased | logchange format)
-          echo "::set-output name=unreleased::${NOTES}"
+        uses: vemel/nextrelease@main
+        with:
+          sanitize: "true"
       - name: Get new auto version
         id: auto-version
         uses: vemel/nextversion@main
         with:
           version-path: ./package.json
-          release-notes: ${{ toJSON(steps.changelog.outputs.unreleased) }}
+          result: ${{ steps.changelog.outputs.label }}
           type: semver
           prerelease: ${{ github.event.inputs.is-prerelease }}
           prerelease-type: rc
@@ -48,13 +45,15 @@ jobs:
         with:
           version-path: ./package.json
           type: semver
-          result: ${{ toJSON(steps.version.outputs.result) }}
+          result: ${{ steps.version.outputs.result }}
           update-path: |
             ./package.json
             ./README.md
       - name: Update changelog
-        run: |
-          logchange release ${{ toJSON(steps.version.outputs.result) }}
+        uses: vemel/nextrelease@main
+        with:
+          sanitize: "true"
+          release: ${{ steps.version.outputs.result }}
       - name: Commit changes
         run: |
           VERSION=${{ toJSON(steps.version.outputs.result) }}
@@ -73,5 +72,6 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           title: "Bump version to ${{ steps.version.outputs.result }}"
-          body: ${{ toJSON(steps.changelog.outputs.unreleased) }}
+          body: ${{ toJSON(steps.changelog.outputs.result) }}

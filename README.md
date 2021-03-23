@@ -1,6 +1,6 @@
 # Next Version
 
-Format, bump, and update a version of Node.js and Python packages.
+Format, bump, and update a version of Node.js and Python packages action.
 
 Current version: 0.0.1
 
@@ -55,7 +55,7 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 - [ ] Add min result version parameter
 
 ## Contributing
-We would love for you to contribute to `actions/bump-version`, pull requests are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
+I would love for you to contribute to `actions/nextversion`, pull requests are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
 
 ## License
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
