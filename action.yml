@@ -1,4 +1,4 @@
-name: "Next version"
+name: "Next Version"
 description: "Format, bump, and update a package version"
 author: "Vlad Emelianov"
 inputs:
