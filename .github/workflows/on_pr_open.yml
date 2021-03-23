@@ -13,29 +13,27 @@ jobs:
         uses: vemel/nextchange@main
         with:
           save: "false"
-          release: "0.0.0"
-          set: ${{ toJSON(github.event.payload.body) }}
+          set: ${{ github.event.pull_request.body }}
       - name: Build labels
         uses: actions/github-script@v3
         id: labels
         with:
           script: |
             const managedLabels = ['patch', 'minor', 'major'];
-            console.log(context);
-            console.log(${{ toJSON(github.event) }});
-            const labels = context.issue.labels.map(data => data.name).filter(label => !managedLabels.includes(label));
-            const label = context.steps.notes.outputs.label;
-            console.log([...labels, label]);
-            return [...labels, label];
+            const labels = context.payload.pull_request.labels.map(data => data.name).filter(label => !managedLabels.includes(label));
+            const label = ${{ toJSON(steps.notes.outputs.label) }};
+            const newLabels = [...labels, label];
+            console.log("New labels:", newLabels);
+            return newLabels;
       - name: Assign labels
         uses: actions/github-script@v3
         with:
           script: |
             const labels = ${{ steps.labels.outputs.result }}
             console.log('Assigned labels', labels)
-            await github.issues.replaceAllLabels({
+            await github.issues.setLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
+              issue_number: context.payload.pull_request.number,
               labels: labels
             })
