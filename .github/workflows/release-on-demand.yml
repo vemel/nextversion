@@ -7,10 +7,10 @@ on:
         description: "Release version. Leave auto to get version from unreleased notes"
         required: true
         default: "auto"
-      is-prerelease:
-        description: "Create a Release Candidate for auto version: true or false"
+      release:
+        description: "Release type: stable, rc, alpha, or beta"
         required: true
-        default: "false"
+        default: "stable"
 
 jobs:
   release-new-version:
@@ -26,11 +26,10 @@ jobs:
         id: auto-version
         uses: vemel/nextversion@main
         with:
-          version-path: ./package.json
+          path: ./package.json
           result: ${{ steps.changelog.outputs.label }}
           type: semver
-          prerelease: ${{ github.event.inputs.is-prerelease }}
-          prerelease-type: rc
+          release: ${{ github.event.inputs.release }}
       - name: Get new version
         id: version
         uses: actions/github-script@v3
@@ -43,10 +42,10 @@ jobs:
       - name: Update version
         uses: vemel/nextversion@main
         with:
-          version-path: ./package.json
+          path: ./package.json
           type: semver
           result: ${{ steps.version.outputs.result }}
-          update-path: |
+          update: |
             ./package.json
             ./README.md
       - name: Update changelog
