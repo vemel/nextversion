@@ -62,13 +62,11 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git checkout -b ${BRANCH}
           git commit -am "Bump version to $VERSION"
-          git tag $VERSION
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: release/${{ steps.version.outputs.result }}
-          tags: true
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
