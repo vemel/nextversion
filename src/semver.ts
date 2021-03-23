@@ -45,6 +45,12 @@ export function bumpRelease(
     return result;
 }
 
+export function bumpBuild(version: string): string {
+    const parsed = new SemVer(version);
+    const build = parseInt(parsed.build[0]) + 1 || 1;
+    return `${parsed.format()}+${build}`;
+}
+
 export function getResults(
     version: string,
     outputPrerelease: boolean,
@@ -58,6 +64,8 @@ export function getResults(
         [Outputs.Patch]: version,
         [Outputs.Micro]: version,
         [Outputs.Prerelease]: version,
+        [Outputs.Postrelease]: version,
+        [Outputs.Build]: version,
         [Outputs.Result]: version
     };
 
@@ -88,6 +96,8 @@ export function getResults(
             prereleaseType
         );
     }
+    results[Outputs.Postrelease] = results[Outputs.Patch];
+    results[Outputs.Build] = bumpBuild(version);
     results[Outputs.Micro] = results[Outputs.Patch];
     if (Object.keys(results).includes(resultKey)) {
         results[Outputs.Result] = results[resultKey];

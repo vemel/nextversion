@@ -25,21 +25,23 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 | `version` | `"0.0.0"` | Current version to bump, use `path` isntead if possible |
 | `type` | `"semver"` | Version type: `semver` or `pep440` |
 | `release` | `"stable"` | Release type: `stable` `rc`, `alpha` or `beta` |
-| `result` | `"patch"` | Version to set as `result`: `major`, `minor`, `patch`, `micro`, `prerelease`, or explicit version |
+| `result` | `"patch"` | Version to set as `result`: `major`, `minor`, `patch`, `micro`, `prerelease`, `build`, `postrelease`, or explicit version |
 | `update` | `""` | Newline-separated paths to version files to update |
 | `encoding` | `"utf-8"` | Encoding for files provided in `path` |
 
 ### Outputs
-| Name | Example | Description |
-| - | - | - |
-| `major` | `"2.0.0"` | Next major version |
-| `minor` | `"1.3.0"` | Next minor version |
-| `patch` | `"1.2.3"` | Next patch/micro version |
-| `micro` | `"1.2.3"` | Next patch/micro version |
-| `prerelease` | `"1.2.3-rc.2"` | Next prerelease version |
-| `result` | `"1.2.3"` | Next version specified in output |
-| `input` | `"1.2.3-rc.1"` | Normalized input version |
-| `raw-input` | `"v1.2.3-rc.1"` | Raw input string |
+| Name | SemVer Example | PEP440 Example | Description |
+| - | - | - | - |
+| `major` | `"2.0.0"` | `"2.0.0"` | Next major version |
+| `minor` | `"1.3.0"` | `"1.3.0"` | Next minor version |
+| `patch` | `"1.2.3"` | `"1.2.3"` | Next patch/micro version |
+| `micro` | `"1.2.3"` | `"1.2.3"` | Next patch/micro version |
+| `prerelease` | `"1.2.3-rc.2"` | `"1.2.3rc2"` | Next prerelease version |
+| `build` | `"1.2.3-rc.1+1"` | `"1.2.3rc1+1"` | Next build/local version |
+| `postrelease` | `"1.2.4"` | `"1.2.3.post1"` | Next postrelease version (pep440 only) |
+| `result` | `"1.2.3"` | `"1.2.3"` | Next version specified in output |
+| `input` | `"1.2.3-rc.1"` `"1.2.3rc1"` | | Normalized input version |
+| `raw-input` | `"v1.2.3-rc.1"` `"v1.2.3rc1"` | | Raw input string |
 
 
 ## Examples
@@ -49,7 +51,6 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 - [Node.js: Bump version on release published](examples/pnodejs-on-release-published.yml)
 
 ## TODO
-- [ ] Add postrelease support
 - [ ] Add min result version parameter
 
 ## Contributing

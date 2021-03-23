@@ -8,4 +8,6 @@ export interface Results {
     [Outputs.Prerelease]: string;
     [Outputs.Input]: string;
     [Outputs.Result]: string;
+    [Outputs.Postrelease]: string;
+    [Outputs.Build]: string;
 }

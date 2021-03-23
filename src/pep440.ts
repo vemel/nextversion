@@ -1,4 +1,5 @@
 import { clean, explain, inc } from "@renovate/pep440";
+import { parse, stringify } from "@renovate/pep440/lib/version";
 
 import { Outputs } from "./constants";
 import { Results } from "./types";
@@ -45,6 +46,20 @@ export function bumpRelease(
     return result;
 }
 
+function bumpPostrelease(version: string): string {
+    const parsed = parse(version);
+    delete parsed.pre;
+    parsed.post = ["post", parsed.post ? parsed.post[1] + 1 : 1];
+    return clean(stringify(parsed));
+}
+
+function bumpLocal(version: string): string {
+    const parsed = parse(version);
+    const local = parsed.local ? parsed.local[0] + 1 : 1;
+    parsed.local = [local];
+    return clean(stringify(parsed));
+}
+
 export function getResults(
     version: string,
     outputPrerelease: boolean,
@@ -58,7 +73,9 @@ export function getResults(
         [Outputs.Patch]: version,
         [Outputs.Micro]: version,
         [Outputs.Prerelease]: version,
-        [Outputs.Result]: version
+        [Outputs.Result]: version,
+        [Outputs.Postrelease]: version,
+        [Outputs.Build]: version
     };
 
     if (outputPrerelease) {
@@ -89,6 +106,8 @@ export function getResults(
         );
     }
     results[Outputs.Micro] = results[Outputs.Patch];
+    results[Outputs.Postrelease] = bumpPostrelease(version);
+    results[Outputs.Build] = bumpLocal(version);
     if (Object.keys(results).includes(resultKey)) {
         results[Outputs.Result] = results[resultKey];
     } else {

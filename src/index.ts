@@ -31,15 +31,15 @@ function getResults(
     );
 }
 
-function setOutputs(input: string, result: string, results: Results): void {
+function setOutputs(results: Results): void {
     core.setOutput(Outputs.Major, results[Outputs.Major]);
     core.setOutput(Outputs.Minor, results[Outputs.Minor]);
     core.setOutput(Outputs.Patch, results[Outputs.Patch]);
     core.setOutput(Outputs.Micro, results[Outputs.Micro]);
     core.setOutput(Outputs.Prerelease, results[Outputs.Prerelease]);
+    core.setOutput(Outputs.Postrelease, results[Outputs.Postrelease]);
     core.setOutput(Outputs.Result, results[Outputs.Result]);
     core.setOutput(Outputs.Input, results[Outputs.Input]);
-    core.setOutput(Outputs.RawInput, input);
 }
 
 function updatePath(
@@ -96,7 +96,8 @@ async function run(): Promise<void> {
             resultKey
         );
         const result = results[Outputs.Result];
-        setOutputs(version, result, results);
+        core.setOutput(Outputs.RawInput, version);
+        setOutputs(results);
         for (const path of updatePaths) {
             updatePath(version, result, path, encoding);
         }

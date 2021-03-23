@@ -44,6 +44,8 @@ test("get results", async () => {
         patch: "1.2.4rc1",
         micro: "1.2.4rc1",
         prerelease: "1.2.4rc1",
+        build: "1.2.3+1",
+        postrelease: "1.2.3.post1",
         result: "1.2.4rc1"
     });
     expect(getResults("1.2.3", false, "rc", "3.4.5")).toStrictEqual({
@@ -53,6 +55,8 @@ test("get results", async () => {
         patch: "1.2.4",
         micro: "1.2.4",
         prerelease: "1.2.4rc1",
+        build: "1.2.3+1",
+        postrelease: "1.2.3.post1",
         result: "3.4.5"
     });
     expect(getResults("1.2.3.rc1", false, "rc", "input")).toStrictEqual({
@@ -62,6 +66,19 @@ test("get results", async () => {
         patch: "1.2.3",
         micro: "1.2.3",
         prerelease: "1.2.3rc2",
+        build: "1.2.3rc1+1",
+        postrelease: "1.2.3.post1",
         result: "1.2.3rc1"
+    });
+    expect(getResults("1.2.3.post5", false, "rc", "input")).toStrictEqual({
+        input: "1.2.3.post5",
+        major: "2.0.0",
+        minor: "1.3.0",
+        patch: "1.2.4",
+        micro: "1.2.4",
+        prerelease: "1.2.4rc1",
+        build: "1.2.3.post5+1",
+        postrelease: "1.2.3.post6",
+        result: "1.2.3.post5"
     });
 });

@@ -17,6 +17,8 @@ export enum Outputs {
     Patch = "patch",
     Micro = "micro",
     Prerelease = "prerelease",
+    Postrelease = "postrelease",
+    Build = "build",
     Result = "result"
 }
 

@@ -19,7 +19,7 @@ inputs:
     default: stable
     required: false
   result:
-    description: "Version to set as result: input, major, minor, patch, micro, prerelease or exact version"
+    description: "Version to set as result: input, major, minor, patch, micro, prerelease, build, postrelease or exact version"
     default: patch
     required: false
   update:
@@ -41,6 +41,10 @@ outputs:
     description: "Next patch/micro version"
   prerelease:
     description: "Next prerelease version"
+  build:
+    description: "Next build/local version"
+  postrelease:
+    description: "Next postrelease version (pep440 only)"
   result:
     description: "Next version specified in output"
   input:

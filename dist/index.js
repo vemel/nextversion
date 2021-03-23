@@ -247,7 +247,7 @@ function inc(input, release, preReleaseIdentifier) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getResults = exports.bumpRelease = exports.bumpPrerelease = void 0;
+exports.getResults = exports.bumpBuild = exports.bumpRelease = exports.bumpPrerelease = void 0;
 const semver_1 = __webpack_require__(876);
 const constants_1 = __webpack_require__(211);
 function bumpPrerelease(version, release, preReleaseIdentifier) {
@@ -282,6 +282,12 @@ function bumpRelease(version, release, preReleaseIdentifier) {
     return result;
 }
 exports.bumpRelease = bumpRelease;
+function bumpBuild(version) {
+    const parsed = new semver_1.SemVer(version);
+    const build = parseInt(parsed.build[0]) + 1 || 1;
+    return `${parsed.format()}+${build}`;
+}
+exports.bumpBuild = bumpBuild;
 function getResults(version, outputPrerelease, prereleaseType, resultKey) {
     const results = {
         [constants_1.Outputs.Input]: new semver_1.SemVer(version).format(),
@@ -290,6 +296,8 @@ function getResults(version, outputPrerelease, prereleaseType, resultKey) {
         [constants_1.Outputs.Patch]: version,
         [constants_1.Outputs.Micro]: version,
         [constants_1.Outputs.Prerelease]: version,
+        [constants_1.Outputs.Postrelease]: version,
+        [constants_1.Outputs.Build]: version,
         [constants_1.Outputs.Result]: version
     };
     if (outputPrerelease) {
@@ -304,6 +312,8 @@ function getResults(version, outputPrerelease, prereleaseType, resultKey) {
         results[constants_1.Outputs.Patch] = bumpRelease(version, "patch", prereleaseType);
         results[constants_1.Outputs.Prerelease] = bumpRelease(version, "prerelease", prereleaseType);
     }
+    results[constants_1.Outputs.Postrelease] = results[constants_1.Outputs.Patch];
+    results[constants_1.Outputs.Build] = bumpBuild(version);
     results[constants_1.Outputs.Micro] = results[constants_1.Outputs.Patch];
     if (Object.keys(results).includes(resultKey)) {
         results[constants_1.Outputs.Result] = results[resultKey];
@@ -2730,6 +2740,8 @@ var Outputs;
     Outputs["Patch"] = "patch";
     Outputs["Micro"] = "micro";
     Outputs["Prerelease"] = "prerelease";
+    Outputs["Postrelease"] = "postrelease";
+    Outputs["Build"] = "build";
     Outputs["Result"] = "result";
 })(Outputs = exports.Outputs || (exports.Outputs = {}));
 var VersionType;
@@ -3869,15 +3881,15 @@ function getResults(version, versionType, releaseType, resultKey) {
     }
     return semver_1.getResults(version, outputPrerelease, prereleaseType, resultKey);
 }
-function setOutputs(input, result, results) {
+function setOutputs(results) {
     core.setOutput(constants_1.Outputs.Major, results[constants_1.Outputs.Major]);
     core.setOutput(constants_1.Outputs.Minor, results[constants_1.Outputs.Minor]);
     core.setOutput(constants_1.Outputs.Patch, results[constants_1.Outputs.Patch]);
     core.setOutput(constants_1.Outputs.Micro, results[constants_1.Outputs.Micro]);
     core.setOutput(constants_1.Outputs.Prerelease, results[constants_1.Outputs.Prerelease]);
+    core.setOutput(constants_1.Outputs.Postrelease, results[constants_1.Outputs.Postrelease]);
     core.setOutput(constants_1.Outputs.Result, results[constants_1.Outputs.Result]);
     core.setOutput(constants_1.Outputs.Input, results[constants_1.Outputs.Input]);
-    core.setOutput(constants_1.Outputs.RawInput, input);
 }
 function updatePath(oldVersion, newVersion, path, encoding) {
     core.debug(`Updating path ${path}`);
@@ -3918,7 +3930,8 @@ function run() {
             core.debug(`Result version set to ${resultKey}`);
             const results = getResults(version, versionType, releaseType, resultKey);
             const result = results[constants_1.Outputs.Result];
-            setOutputs(version, result, results);
+            core.setOutput(constants_1.Outputs.RawInput, version);
+            setOutputs(results);
             for (const path of updatePaths) {
                 updatePath(version, result, path, encoding);
             }
@@ -14151,6 +14164,7 @@ module.exports = classof(global.process) == 'process';
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getResults = exports.bumpRelease = exports.bumpPrerelease = void 0;
 const pep440_1 = __webpack_require__(671);
+const version_1 = __webpack_require__(894);
 const constants_1 = __webpack_require__(211);
 function bumpPrerelease(version, release, preReleaseIdentifier) {
     const parsed = pep440_1.explain(version);
@@ -14184,6 +14198,18 @@ function bumpRelease(version, release, preReleaseIdentifier) {
     return result;
 }
 exports.bumpRelease = bumpRelease;
+function bumpPostrelease(version) {
+    const parsed = version_1.parse(version);
+    delete parsed.pre;
+    parsed.post = ["post", parsed.post ? parsed.post[1] + 1 : 1];
+    return pep440_1.clean(version_1.stringify(parsed));
+}
+function bumpLocal(version) {
+    const parsed = version_1.parse(version);
+    const local = parsed.local ? parsed.local[0] + 1 : 1;
+    parsed.local = [local];
+    return pep440_1.clean(version_1.stringify(parsed));
+}
 function getResults(version, outputPrerelease, prereleaseType, resultKey) {
     const results = {
         [constants_1.Outputs.Input]: pep440_1.clean(version),
@@ -14192,7 +14218,9 @@ function getResults(version, outputPrerelease, prereleaseType, resultKey) {
         [constants_1.Outputs.Patch]: version,
         [constants_1.Outputs.Micro]: version,
         [constants_1.Outputs.Prerelease]: version,
-        [constants_1.Outputs.Result]: version
+        [constants_1.Outputs.Result]: version,
+        [constants_1.Outputs.Postrelease]: version,
+        [constants_1.Outputs.Build]: version
     };
     if (outputPrerelease) {
         results[constants_1.Outputs.Major] = bumpPrerelease(version, "premajor", prereleaseType);
@@ -14207,6 +14235,8 @@ function getResults(version, outputPrerelease, prereleaseType, resultKey) {
         results[constants_1.Outputs.Prerelease] = bumpRelease(version, "prerelease", prereleaseType);
     }
     results[constants_1.Outputs.Micro] = results[constants_1.Outputs.Patch];
+    results[constants_1.Outputs.Postrelease] = bumpPostrelease(version);
+    results[constants_1.Outputs.Build] = bumpLocal(version);
     if (Object.keys(results).includes(resultKey)) {
         results[constants_1.Outputs.Result] = results[resultKey];
     }
