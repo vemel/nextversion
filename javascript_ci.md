@@ -2,6 +2,9 @@
 
 - [Easy CI/CD for JavaScript/TypeScript projects](#easy-cicd-for-javascripttypescript-projects)
   - [Summary](#summary)
+    - [Easy CI/CD Zen](#easy-cicd-zen)
+    - [What it does](#what-it-does)
+    - [What it does not](#what-it-does-not)
   - [Secrets](#secrets)
   - [Workflows](#workflows)
     - [Update Pull Request labels](#update-pull-request-labels)
@@ -14,10 +17,29 @@ GitHub Actions for automated JavaScript/TypeScript projects.
 
 ## Summary
 
-- Uses [SemVer](https://semver.org/) versioning schema
+### Easy CI/CD Zen
+
+- Write Release and Pull Request notes in [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format
+- Follow [SemVer](https://semver.org/) versioning schema
+- Noone likes to write and assemble Release notes, so leave it to automation
+- Always leave a final decision to a human in case automation goes crazy
+- Enforce best practices for versioning and changelog in a passive-aggressive way
+
+### What it does
+
+- Enforces [SemVer](https://semver.org/) versioning schema
 - Release and Pull Request notes follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format
 - Supports publishing new versions to [npm](https://www.npmjs.com/)
 - Automatically bumps version in `package.json` and adds published Release notes to `CHANGELOG.md`
+- Releases are build in `release/*` branches to prevent unwanted changes 
+
+### What it does not
+
+- There are no workflows to run linting, type checking or unit tests, so this is up to you
+- Does not update files in your branches, ll updates happen in newly created `release/*`,
+  so you can always check that automation does exactly what you want
+- Does not analyze your project files to suggest versions, all suggested versions are based
+  only on Release/Pull Request notes
 
 ## Secrets
 

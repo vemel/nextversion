@@ -2,8 +2,6 @@
 
 Format, bump, and update a version of Node.js and Python packages action.
 
-Current version: 0.0.1
-
 - [Next Version](#next-version)
   - [Usage](#usage)
     - [Pre-requisites](#pre-requisites)
