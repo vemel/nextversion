@@ -47,6 +47,8 @@ outputs:
     description: "Next postrelease version (pep440 only)"
   result:
     description: "Next version specified in output"
+  is-prerelease:
+    description: "Whether result version is a prerelease"
   input:
     description: "Normalized input version"
   raw-input:

@@ -60,6 +60,10 @@ function bumpLocal(version: string): string {
     return clean(stringify(parsed));
 }
 
+function isPrerelease(version: string): boolean {
+    return explain(version).is_prerelease;
+}
+
 export function getResults(
     version: string,
     outputPrerelease: boolean,
@@ -73,9 +77,10 @@ export function getResults(
         [Outputs.Patch]: version,
         [Outputs.Micro]: version,
         [Outputs.Prerelease]: version,
-        [Outputs.Result]: version,
         [Outputs.Postrelease]: version,
-        [Outputs.Build]: version
+        [Outputs.Build]: version,
+        [Outputs.Result]: version,
+        [Outputs.IsPrerelease]: false
     };
 
     if (outputPrerelease) {
@@ -113,5 +118,6 @@ export function getResults(
     } else {
         results[Outputs.Result] = clean(resultKey);
     }
+    results[Outputs.IsPrerelease] = isPrerelease(results[Outputs.Result]);
     return results;
 }

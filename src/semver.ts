@@ -51,6 +51,10 @@ export function bumpBuild(version: string): string {
     return `${parsed.format()}+${build}`;
 }
 
+function isPrerelease(version: string): boolean {
+    return new SemVer(version).prerelease.length ? true : false;
+}
+
 export function getResults(
     version: string,
     outputPrerelease: boolean,
@@ -66,7 +70,8 @@ export function getResults(
         [Outputs.Prerelease]: version,
         [Outputs.Postrelease]: version,
         [Outputs.Build]: version,
-        [Outputs.Result]: version
+        [Outputs.Result]: version,
+        [Outputs.IsPrerelease]: false
     };
 
     if (outputPrerelease) {
@@ -104,5 +109,6 @@ export function getResults(
     } else {
         results[Outputs.Result] = new SemVer(resultKey).format();
     }
+    results[Outputs.IsPrerelease] = isPrerelease(results[Outputs.Result]);
     return results;
 }

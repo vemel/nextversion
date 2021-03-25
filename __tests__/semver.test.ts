@@ -46,7 +46,8 @@ test("get results", async () => {
         prerelease: "1.2.4-rc.1",
         build: "1.2.3+1",
         postrelease: "1.2.4-rc.1",
-        result: "1.2.4-rc.1"
+        result: "1.2.4-rc.1",
+        "is-prerelease": true
     });
     expect(getResults("1.2.3", false, "rc", "3.4.5")).toStrictEqual({
         input: "1.2.3",
@@ -57,7 +58,8 @@ test("get results", async () => {
         prerelease: "1.2.4-rc.1",
         build: "1.2.3+1",
         postrelease: "1.2.4",
-        result: "3.4.5"
+        result: "3.4.5",
+        "is-prerelease": false
     });
     expect(getResults("v1.2.3-rc.1", false, "rc", "input")).toStrictEqual({
         input: "1.2.3-rc.1",
@@ -68,6 +70,7 @@ test("get results", async () => {
         prerelease: "1.2.3-rc.2",
         build: "1.2.3-rc.1+1",
         postrelease: "1.2.3",
-        result: "1.2.3-rc.1"
+        result: "1.2.3-rc.1",
+        "is-prerelease": true
     });
 });

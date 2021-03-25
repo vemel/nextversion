@@ -1,0 +1,96 @@
+# Create a Release Pull Request on Release published
+name: Create Release Pull Request on Release
+
+on:
+  release:
+    types:
+      - published
+  # remove manual dispatch if you do not need it
+  workflow_dispatch:
+    tag:
+      description: "Release tag"
+      required: true
+
+jobs:
+  release-new-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get Release
+        uses: actions/github-script@v3
+        id: release
+        with:
+          script: |
+            let release = null;
+            if (context.payload.inputs && context.payload.inputs.number) {
+              const tagName = context.payload.inputs.tag;
+              // find Pull Request by number fom input
+              const releasesResponse = await github.repos.listReleases({
+                owner: context.repo.owner,
+                repo: context.repo.repo
+              });
+              for (let releaseItem of releasesResponse.data) {
+                if (releaseItem.tag_name !== tagName) continue;
+                release = releaseItem;
+                core.info(`Found release ${release.name}`);
+                break;
+              }
+
+              if (!release) {
+                core.error(`Cannot find Release tag ${tagName}`);
+                return;
+              }
+            } else {
+              // get Pull Request from event payload
+              release = context.payload;
+            }
+
+            core.setOutput('target', release.target_commitish);
+            core.setOutput('id', release.id);
+            core.setOutput("url", release.html_url);
+            core.setOutput('tag', release.tag_name);
+            core.setOutput('name', release.name);
+            core.setOutput('body', release.body);
+            return true;
+      # Switch to Release target branch
+      - name: Checkout Release target branch
+        if: "steps.release.outputs.result"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.release.outputs.target }}
+      - name: Update version
+        id: version
+        if: "steps.release.outputs.result"
+        uses: vemel/nextversion@main
+        with:
+          # replace version in package.json with release tag
+          path: ./package.json
+          type: semver
+          result: ${{ steps.release.outputs.tag }}
+          # add extra paths to files where version should be updated
+          update: |
+            ./package.json
+      - name: Update changelog
+        id: changelog
+        if: "steps.release.outputs.result"
+        uses: vemel/nextchange@main
+        with:
+          get: ${{ steps.version.outputs.result }}
+          set: ${{ steps.release.outputs.body }}
+      - name: Commit changes
+        run: |
+          VERSION=${{ toJSON(steps.version.outputs.result) }}
+          BRANCH="release/${{ steps.version.outputs.result }}"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout -b $BRANCH
+          git commit -am "Bump version to $VERSION"
+          git push
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        if: "steps.release.outputs.result"
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Release ${{ steps.version.outputs.result }}"
+          body: ${{ toJSON(steps.changelog.outputs.result) }}
+          labels: "release,${{ steps.changelog.outputs.label }}"

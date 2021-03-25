@@ -1,4 +1,4 @@
-export enum Inputs {
+export declare enum Inputs {
     Version = "version",
     VersionPath = "path",
     Type = "type",
@@ -8,8 +8,7 @@ export enum Inputs {
     UpdatePath = "update",
     Encoding = "encoding"
 }
-
-export enum Outputs {
+export declare enum Outputs {
     Input = "input",
     RawInput = "raw-input",
     Major = "major",
@@ -22,8 +21,7 @@ export enum Outputs {
     Result = "result",
     IsPrerelease = "is-prerelease"
 }
-
-export enum VersionType {
+export declare enum VersionType {
     PEP440 = "pep440",
     SemVer = "semver"
 }

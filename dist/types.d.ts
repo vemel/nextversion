@@ -1,5 +1,4 @@
 import { Outputs } from "./constants";
-
 export interface Results {
     [Outputs.Major]: string;
     [Outputs.Minor]: string;

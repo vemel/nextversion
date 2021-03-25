@@ -40,6 +40,7 @@ function setOutputs(results: Results): void {
     core.setOutput(Outputs.Postrelease, results[Outputs.Postrelease]);
     core.setOutput(Outputs.Result, results[Outputs.Result]);
     core.setOutput(Outputs.Input, results[Outputs.Input]);
+    core.setOutput(Outputs.IsPrerelease, results[Outputs.IsPrerelease]);
 }
 
 function updatePath(

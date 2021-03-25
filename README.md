@@ -10,6 +10,9 @@ Current version: 0.0.1
     - [Inputs](#inputs)
     - [Outputs](#outputs)
   - [Examples](#examples)
+    - [Node.js-ready CI workflows](#nodejs-ready-ci-workflows)
+    - [Python-ready CI workflows](#python-ready-ci-workflows)
+    - [Other examples](#other-examples)
   - [TODO](#todo)
   - [Contributing](#contributing)
   - [License](#license)
@@ -40,11 +43,22 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 | `build` | `"1.2.3-rc.1+1"` | `"1.2.3rc1+1"` | Next build/local version |
 | `postrelease` | `"1.2.4"` | `"1.2.3.post1"` | Next postrelease version (pep440 only) |
 | `result` | `"1.2.3"` | `"1.2.3"` | Next version specified in output |
+| `is-prerelease` | `false` | `false` | Whether result version is a prerelease |
 | `input` | `"1.2.3-rc.1"` | `"1.2.3rc1"` | Normalized input version |
 | `raw-input` | `"v1.2.3-rc.1"` | `"v1.2.3rc1"` | Raw input string |
 
 
 ## Examples
+
+### Node.js-ready CI workflows
+
+Workflows pack for [Node.js](./nodejs_ci.md) packages.
+
+### Python-ready CI workflows
+
+Coming soon
+
+### Other examples
 - [Python: Bump version on demand](examples/python-on-demand.yml)
 - [Python: Bump version on release published](examples/python-on-release-published.yml)
 - [Node.js: Bump version on demand](examples/nodejs-on-demand.yml)
