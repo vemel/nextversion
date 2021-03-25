@@ -1,6 +1,6 @@
-# Easy CI/CD - JavaScript/TypeScript edition 
+# Easy CI/CD for JavaScript/TypeScript projects
 
-- [Easy CI/CD - JavaScript/TypeScript edition](#easy-cicd---javascripttypescript-edition)
+- [Easy CI/CD for JavaScript/TypeScript projects](#easy-cicd-for-javascripttypescript-projects)
   - [Summary](#summary)
   - [Secrets](#secrets)
   - [Workflows](#workflows)
@@ -8,9 +8,8 @@
     - [Update Release draft from Pull Request notes](#update-release-draft-from-pull-request-notes)
     - [Create release Pull Request on Release](#create-release-pull-request-on-release)
     - [Publish to NPM on Release Pull Request merged](#publish-to-npm-on-release-pull-request-merged)
-  - [GitHub Actions used](#github-actions-used)
 
-GitHub Actions for automated Node.js projects publishing
+GitHub Actions for automated JavaScript/TypeScript projects.
 
 ## Summary
 
@@ -31,6 +30,7 @@ Workflow: [on_pull_opened_or_edited.yml](nodejs_workflows/on_pull_opened_or_edit
 
 - Starts on Pull Request opened or edited event
 - Pull Request notes must be in [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format
+- If Pull Request branch name is `release/*`, adds `release` label
 - If Pull Request notes has `Removed` section, adds `major` label
 - If Pull Request notes has `Added`, `Changed` or `Deprecated` sections, adds `minor` label
 - Otherwise adds `patch` label
@@ -87,9 +87,3 @@ Workflow: [on_release_pull_merged.yml](nodejs_workflows/on_release_pull_merged.y
 # run this command from a GitHub repository root
 curl https://github.com/vemel/nextversion/blob/main/nodejs_workflows/on_release_pull_merged.yml -o nodejs_workflows/on_release_pull_merged.yml
 ```
-
-## GitHub Actions used
-
-- [vemel/nextversion](https://github.com/marketplace/actions/next-version)
-- [vemel/nextchange](https://github.com/marketplace/actions/next-change)
-- [peter-evans/create-pull-request](https://github.com/marketplace/actions/create-pull-request)

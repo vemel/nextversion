@@ -4,6 +4,7 @@ name: Publish to NPM on Release Pull Request merged
 on:
   pull_request:
     types: [closed]
+  # remove manual dispatch if you do not need it
   workflow_dispatch:
     number:
       description: "Pull Request number"
@@ -61,15 +62,19 @@ jobs:
       # Switch to Pull Request base branch
       - name: Checkout Pull Request base branch
         if: "steps.pull-request.outputs.result"
-        run: |
-          BRANCH=${{ toJSON(steps.pull-request.outputs.branch) }};
-          git fetch
-          git checkout ${BRANCH}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.pull-request.outputs.base }}
       - uses: actions/setup-node@v2
         if: "steps.pull-request.outputs.result"
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
+      - name: Build npm package
+        if: "steps.pull-request.outputs.result"
+        run: |
+          npm install
+          npm run build
       # publish to NPM if NPM_TOKEN secret is set
       - name: Publish new version to NPM
         if: "steps.pull-request.outputs.result"

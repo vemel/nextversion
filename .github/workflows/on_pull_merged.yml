@@ -14,8 +14,6 @@ jobs:
   update-release-draft:
     runs-on: ubuntu-latest
     steps:
-      # Switch to Pull Request base branch to set release draft tag based on package.json and CHANGELOG.md
-      - uses: actions/checkout@v2
       - name: Get Pull Request
         uses: actions/github-script@v3
         id: pull-request
@@ -78,9 +76,8 @@ jobs:
         uses: vemel/nextchange@main
         with:
           # get Unreleased section of CHANGELOG.md to set as a body of a newly created release draft
-          save: false
-          sanitize: true
           get: Unreleased
+          sanitize: true
       - name: Get or create a Release draft
         uses: actions/github-script@v3
         id: release
@@ -128,10 +125,6 @@ jobs:
         if: "steps.pull-request.outputs.result"
         uses: vemel/nextchange@main
         with:
-          # do not save new release entry to CHANGELOG.md, we only need output of this step
-          save: false
-          # get non-existing release to start with empty notes
-          get: new
           # add existing release notes as they are as notes
           set: ${{ steps.release.outputs.body }}
           # append pull request keep a changelog sections to notes

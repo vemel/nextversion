@@ -15,7 +15,6 @@ jobs:
   release-new-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: Get Release
         uses: actions/github-script@v3
         id: release
@@ -35,14 +34,15 @@ jobs:
                 core.info(`Found release ${release.name}`);
                 break;
               }
+            }
+            if (context.payload.release){
+              // get Release from event payload
+              pullRequest = context.payload.release;
+            }
 
-              if (!release) {
-                core.error(`Cannot find Release tag ${tagName}`);
-                return;
-              }
-            } else {
-              // get Pull Request from event payload
-              release = context.payload;
+            if (!release) {
+              core.error(`Cannot find Release`);
+              return;
             }
 
             core.setOutput('target', release.target_commitish);
@@ -71,13 +71,20 @@ jobs:
           # add extra paths to files where version should be updated
           update: |
             ./package.json
-      - name: Update changelog
+      - name: Add new release to CHANGELOG.md
         id: changelog
         if: "steps.release.outputs.result"
         uses: vemel/nextchange@main
         with:
-          get: ${{ steps.version.outputs.result }}
+          release: ${{ steps.version.outputs.result }}
+          clear: true
           set: ${{ steps.release.outputs.body }}
+      - name: Clear Unreleased in CHANGELOG.md
+        if: "steps.release.outputs.result"
+        uses: vemel/nextchange@main
+        with:
+          release: Unreleased
+          clear: true
       - name: Commit changes
         if: "steps.release.outputs.result"
         run: |
@@ -101,4 +108,5 @@ jobs:
               title: "Release ${{ steps.version.outputs.result }}",
               body: ${{ toJSON(steps.changelog.outputs.result) }}
             });
-            core.info(`Release Pull Request URL: ${response.data}`);
+            core.info(`Release Pull Request title: ${response.data.title}`);
+            core.info(`Release Pull Request URL: ${response.data.html_url}`);

@@ -15,7 +15,6 @@ jobs:
   release-new-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: Get Release
         uses: actions/github-script@v3
         id: release
@@ -72,13 +71,20 @@ jobs:
           # add extra paths to files where version should be updated
           update: |
             ./package.json
-      - name: Update changelog
+      - name: Add new release to CHANGELOG.md
         id: changelog
         if: "steps.release.outputs.result"
         uses: vemel/nextchange@main
         with:
-          get: ${{ steps.version.outputs.result }}
+          release: ${{ steps.version.outputs.result }}
+          clear: true
           set: ${{ steps.release.outputs.body }}
+      - name: Clear Unreleased in CHANGELOG.md
+        if: "steps.release.outputs.result"
+        uses: vemel/nextchange@main
+        with:
+          release: Unreleased
+          clear: true
       - name: Commit changes
         if: "steps.release.outputs.result"
         run: |
@@ -102,4 +108,5 @@ jobs:
               title: "Release ${{ steps.version.outputs.result }}",
               body: ${{ toJSON(steps.changelog.outputs.result) }}
             });
-            core.info(`Release Pull Request URL: ${response.data.heml_url}`);
+            core.info(`Release Pull Request title: ${response.data.title}`);
+            core.info(`Release Pull Request URL: ${response.data.html_url}`);

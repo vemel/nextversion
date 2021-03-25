@@ -10,8 +10,8 @@ Current version: 0.0.1
     - [Inputs](#inputs)
     - [Outputs](#outputs)
   - [Examples](#examples)
-    - [Node.js-ready CI workflows](#nodejs-ready-ci-workflows)
-    - [Python-ready CI workflows](#python-ready-ci-workflows)
+    - [Easy CI/CD for JavaScript/TypeScript projects](#easy-cicd-for-javascripttypescript-projects)
+    - [Easy CI/CD for Python projects](#easy-cicd-for-python-projects)
     - [Other examples](#other-examples)
   - [TODO](#todo)
   - [Contributing](#contributing)
@@ -50,11 +50,11 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 
 ## Examples
 
-### Node.js-ready CI workflows
+### Easy CI/CD for JavaScript/TypeScript projects
 
-Workflows pack for [Node.js](./nodejs_ci.md) packages.
+Check this [manual](./javascript_ci.md).
 
-### Python-ready CI workflows
+### Easy CI/CD for Python projects 
 
 Coming soon
 

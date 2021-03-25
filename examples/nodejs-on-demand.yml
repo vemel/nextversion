@@ -30,12 +30,37 @@ jobs:
             ./package.json
             ./src/constants.js
             ./README.md
-      - name: Update CHANGELOG.md
-        id: version
+      - name: Add new release to CHANGELOG.md
+        id: changelog
         uses: vemel/nextchange@main
         with:
           release: ${{ steps.version.outputs.result }}
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+          get: Unreleased
+      - name: Remove Unreleased notes from CHANGELOG.md
+        id: changelog
+        uses: vemel/nextchange@main
         with:
-          title: "Bump version to ${{ steps.version.outputs.result }}"
+          release: Unreleased
+          clear: true
+      - name: Commit changes
+        run: |
+          VERSION=${{ toJSON(steps.version.outputs.result) }}
+          BRANCH="release/${VERSION}"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git checkout -b $BRANCH
+          git commit -am "Bump version to $VERSION"
+          git push --set-upstream origin $BRANCH
+      - name: Create Pull Request
+        uses: actions/github-script@v3
+        if: "steps.release.outputs.result"
+        with:
+          script: |
+            const response = await github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: 'release/${{ steps.version.outputs.result }}',
+              base: main,
+              title: 'Release ${{ steps.version.outputs.result }}',
+              body: ${{ toJSON(steps.changelog.outputs.result) }}
+            });

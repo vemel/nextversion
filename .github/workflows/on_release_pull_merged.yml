@@ -70,6 +70,11 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
+      - name: Build npm package
+        if: "steps.pull-request.outputs.result"
+        run: |
+          npm install
+          npm run build
       # publish to NPM if NPM_TOKEN secret is set
       - name: Publish new version to NPM
         if: "steps.pull-request.outputs.result"
