@@ -21,6 +21,7 @@ jobs:
         id: pull-request
         with:
           script: |
+            console.log(JSON.stringify(context.payload));
             let pullRequest = null;
             if (context.payload.inputs && context.payload.inputs.number) {
               const number = context.payload.inputs.number;

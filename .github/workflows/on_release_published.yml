@@ -46,6 +46,7 @@ jobs:
             }
 
             core.setOutput('target', release.target_commitish);
+            core.setOutput('branch', `release/${release.tag_name}`);
             core.setOutput('id', release.id);
             core.setOutput("url", release.html_url);
             core.setOutput('tag', release.tag_name);
@@ -78,19 +79,26 @@ jobs:
           get: ${{ steps.version.outputs.result }}
           set: ${{ steps.release.outputs.body }}
       - name: Commit changes
+        if: "steps.release.outputs.result"
         run: |
           VERSION=${{ toJSON(steps.version.outputs.result) }}
-          BRANCH="release/${{ steps.version.outputs.result }}"
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          BRANCH=${{ toJSON(steps.release.outputs.branch) }}
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git checkout -b $BRANCH
           git commit -am "Bump version to $VERSION"
-          git push
+          git push --set-upstream origin $BRANCH
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: actions/github-script@v3
         if: "steps.release.outputs.result"
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Release ${{ steps.version.outputs.result }}"
-          body: ${{ toJSON(steps.changelog.outputs.result) }}
-          labels: "release,${{ steps.changelog.outputs.label }}"
+          script: |
+            const response = await github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: ${{ toJSON(steps.release.outputs.branch) }},
+              base: ${{ toJSON(steps.release.outputs.target) }},
+              title: "Release ${{ steps.version.outputs.result }}",
+              body: ${{ toJSON(steps.changelog.outputs.result) }}
+            });
+            core.info(`Release Pull Request URL: ${response.data.heml_url}`);
