@@ -36,9 +36,15 @@ jobs:
                 core.error(`Cannot get Pull Request #${number}: ${e}`);
                 return;
               }
-            } else {
+            }
+            if (context.payload.pull_request){
               // get Pull Request from event payload
-              pullRequest = context.payload;
+              pullRequest = context.payload.pull_request;
+            }
+
+            if (!pullRequest) {
+              core.error(`Cannot find Pull Request`);
+              return;
             }
 
             core.setOutput('number', pullRequest.number);

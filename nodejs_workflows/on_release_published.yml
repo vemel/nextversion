@@ -101,4 +101,4 @@ jobs:
               title: "Release ${{ steps.version.outputs.result }}",
               body: ${{ toJSON(steps.changelog.outputs.result) }}
             });
-            core.info(`Release Pull Request URL: ${response.data.heml_url}`);
+            core.info(`Release Pull Request URL: ${response.data}`);

@@ -35,14 +35,15 @@ jobs:
                 core.info(`Found release ${release.name}`);
                 break;
               }
+            }
+            if (context.payload.release){
+              // get Release from event payload
+              pullRequest = context.payload.release;
+            }
 
-              if (!release) {
-                core.error(`Cannot find Release tag ${tagName}`);
-                return;
-              }
-            } else {
-              // get Pull Request from event payload
-              release = context.payload;
+            if (!release) {
+              core.error(`Cannot find Release`);
+              return;
             }
 
             core.setOutput('target', release.target_commitish);
