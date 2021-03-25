@@ -8,6 +8,7 @@
     - [Update Release draft from Pull Request notes](#update-release-draft-from-pull-request-notes)
     - [Create release Pull Request on Release](#create-release-pull-request-on-release)
     - [Publish to NPM on Release Pull Request merged](#publish-to-npm-on-release-pull-request-merged)
+    - [Create or update a Release draft from Unreleased notes](#create-or-update-a-release-draft-from-unreleased-notes)
 
 GitHub Actions for automated JavaScript/TypeScript projects.
 
@@ -80,10 +81,27 @@ Workflow: [on_release_pull_merged.yml](nodejs_workflows/on_release_pull_merged.y
 - Starts on Pull Request merge for `release/*` branch
 - Uses Pull Request branch for deployment, so released version contains only changes
   from base branch when Release had been published
+- Runs `npm run build` if this command is available
 - Publishes new version to [npm](https://www.npmjs.com/) if `NPM_TOKEN` secret is set
 
 ```bash
 # download workflows to GitHub Action directory
 # run this command from a GitHub repository root
 curl https://github.com/vemel/nextversion/blob/main/nodejs_workflows/on_release_pull_merged.yml -o nodejs_workflows/on_release_pull_merged.yml
+```
+
+### Create or update a Release draft from Unreleased notes
+
+Workflow: [on_demand_create_release_draft.yml](nodejs_workflows/on_demand_create_release_draft.yml)
+
+- Starts only manually
+- Can be used if you do not enforce Pull Request-based updates and commit directly to `target` branch
+- Creates or updates a release draft for `target` branch
+- If Release draft does not exist or has empty notes - notes are populated from `Unreleased` section of `CHANGELOG.md`
+- Sets suggested version as `name` and `tag` of the Release
+
+```bash
+# download workflows to GitHub Action directory
+# run this command from a GitHub repository root
+curl https://github.com/vemel/nextversion/blob/main/nodejs_workflows/on_demand_create_release_draft.yml -o nodejs_workflows/on_demand_create_release_draft.yml
 ```

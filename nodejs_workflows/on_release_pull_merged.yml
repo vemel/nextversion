@@ -15,7 +15,6 @@ jobs:
     if: "secrets.NPM_TOKEN"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: Get Pull Request
         uses: actions/github-script@v3
         id: pull-request
@@ -73,8 +72,13 @@ jobs:
       - name: Build npm package
         if: "steps.pull-request.outputs.result"
         run: |
+          # install package dependencies
           npm install
-          npm run build
+
+          # run npm run bild if it is available
+          if [[ `jq -r '.scripts.build' package.json` != "null" ]]; then
+            npm run build
+          fi;
       # publish to NPM if NPM_TOKEN secret is set
       - name: Publish new version to NPM
         if: "steps.pull-request.outputs.result"

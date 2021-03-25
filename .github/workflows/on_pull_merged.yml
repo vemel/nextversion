@@ -78,7 +78,7 @@ jobs:
           # get Unreleased section of CHANGELOG.md to set as a body of a newly created release draft
           get: Unreleased
           sanitize: true
-      - name: Get or create a Release draft
+      - name: Get or create Release draft
         uses: actions/github-script@v3
         id: release
         if: "steps.pull-request.outputs.result"
