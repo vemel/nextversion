@@ -8,10 +8,8 @@ Format, bump, and update a version of Node.js and Python packages action.
     - [Inputs](#inputs)
     - [Outputs](#outputs)
   - [Examples](#examples)
-    - [Easy CI/CD for JavaScript/TypeScript projects](#easy-cicd-for-javascripttypescript-projects)
-    - [Easy CI/CD for Python projects](#easy-cicd-for-python-projects)
+    - [Easy CI/CD for JavaScript/TypeScript and Python projects](#easy-cicd-for-javascripttypescript-and-python-projects)
     - [Other examples](#other-examples)
-  - [TODO](#todo)
   - [Contributing](#contributing)
   - [License](#license)
 
@@ -48,22 +46,15 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 
 ## Examples
 
-### Easy CI/CD for JavaScript/TypeScript projects
+### Easy CI/CD for JavaScript/TypeScript and Python projects
 
-Check this [manual](./javascript_ci.md).
-
-### Easy CI/CD for Python projects 
-
-Coming soon
+https://github.com/vemel/github_actions_js/
 
 ### Other examples
 - [Python: Bump version on demand](examples/python-on-demand.yml)
 - [Python: Bump version on release published](examples/python-on-release-published.yml)
 - [Node.js: Bump version on demand](examples/nodejs-on-demand.yml)
 - [Node.js: Bump version on release published](examples/pnodejs-on-release-published.yml)
-
-## TODO
-- [ ] Add min result version parameter
 
 ## Contributing
 I would love for you to contribute to `actions/nextversion`, pull requests are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) for more information.

@@ -1,15 +1,23 @@
-# Update release draft on non-release pull request merge
-name: Update Release draft from Pull Request notes
+# This workflow provided by GitHubActions.js project
+# Documentation: https://github.com/vemel/github_actions_js
+#
+# --- How to modify this workflow and still get updates ---
+# - Set 'github-actions-managed' to false on manual edit to prevent step overwrite on update
+# - User-added steps survive update as well
+# - Deleted steps are restored on update, so make them empty instead of removing
+# - Do not add multiple jobs, only one job is supported
+# - This comment is user-editable and is not updated automatically
 
-on:
+name: Update Release from Pull Request
+"on":
   pull_request:
-    types: [closed]
-  # remove manual dispatch if you do not need it
+    types:
+      - closed
   workflow_dispatch:
-    number:
-      description: "Pull Request number"
-      required: true
-
+    inputs:
+      number:
+        description: Pull Request number
+        required: true
 jobs:
   update-release-draft:
     runs-on: ubuntu-latest
@@ -18,6 +26,7 @@ jobs:
         uses: actions/github-script@v3
         id: pull-request
         with:
+          github-actions-managed: true
           script: |
             let pullRequest = null;
             if (context.payload.inputs && context.payload.inputs.number) {
@@ -64,25 +73,28 @@ jobs:
             core.setOutput('body', pullRequest.body);
             core.setOutput('suffix', `[#${pullRequest.number}](${pullRequest.html_url})`);
             return true;
-      # Switch to Pull Request base branch to set release draft tag based on package.json and CHANGELOG.md
       - name: Checkout Pull Request base branch
-        if: "steps.pull-request.outputs.result"
+        id: checkout
+        if: steps.pull-request.outputs.result
         uses: actions/checkout@v2
         with:
+          github-actions-managed: true
           ref: ${{ steps.pull-request.outputs.base }}
       - name: Get Unreleased notes
         id: unreleased
-        if: "steps.pull-request.outputs.result"
+        if: steps.pull-request.outputs.result
         uses: vemel/nextchange@main
         with:
-          # get Unreleased section of CHANGELOG.md to set as a body of a newly created release draft
+          github-actions-managed: true
+          github-actions-comment: Get Unreleased section of CHANGELOG.md to set as notes of a newly created Release draft
           get: Unreleased
           sanitize: true
       - name: Get or create Release draft
         uses: actions/github-script@v3
         id: release
-        if: "steps.pull-request.outputs.result"
+        if: steps.pull-request.outputs.result
         with:
+          github-actions-managed: true
           script: |
             let release = null;
             const baseBranch = ${{ toJSON(steps.pull-request.outputs.base) }};
@@ -122,30 +134,31 @@ jobs:
             core.setOutput('body', release.body);
       - name: Build Release notes
         id: notes
-        if: "steps.pull-request.outputs.result"
+        if: steps.pull-request.outputs.result
         uses: vemel/nextchange@main
         with:
-          # add existing release notes as they are as notes
+          github-actions-managed: true
+          github-actions-comment: Merge Pull Request notes to Release notes and add link to this PR
           set: ${{ steps.release.outputs.body }}
-          # append pull request keep a changelog sections to notes
           append: ${{ steps.pull-request.outputs.body }}
-          # add pull request link to each appended section
           suffix: ${{ steps.pull-request.outputs.suffix }}
       - name: Get suggested version
         id: version
-        if: "steps.pull-request.outputs.result"
+        if: steps.pull-request.outputs.result
         uses: vemel/nextversion@main
         with:
+          github-actions-managed: true
+          github-actions-comment: Release draft will be an RC, use 'stable' instead if needed
           path: ./package.json
-          # set release tag to a release candidate verion
-          # you can change it to `stable`
+          type: semver
           release: rc
-          # bump version from package.json according to release notes
           result: ${{ steps.notes.outputs.label }}
       - name: Update release draft
         uses: actions/github-script@v3
-        if: "steps.pull-request.outputs.result"
+        id: update-release
+        if: steps.pull-request.outputs.result
         with:
+          github-actions-managed: true
           script: |
             const releaseId = ${{ steps.release.outputs.id }};
             core.info(`Release ID: ${releaseId}`);
@@ -173,9 +186,11 @@ jobs:
             });
             core.info(`Release URL: ${response.data.html_url}`);
       - name: Add comment to Pull Request
+        id: add-comment
         uses: actions/github-script@v3
-        if: "steps.pull-request.outputs.result"
+        if: steps.pull-request.outputs.result
         with:
+          github-actions-managed: true
           script: |
             const issueNumber = ${{ steps.pull-request.outputs.number }};
             const version = ${{ toJSON(steps.version.outputs.result) }};

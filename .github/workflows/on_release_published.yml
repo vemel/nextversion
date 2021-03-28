@@ -1,16 +1,23 @@
-# Create a Release Pull Request on Release published
-name: Create Release Pull Request on Release
+# This workflow provided by GitHubActions.js project
+# Documentation: https://github.com/vemel/github_actions_js
+#
+# --- How to modify this workflow and still get updates ---
+# - Set 'github-actions-managed' to false on manual edit to prevent step overwrite on update
+# - User-added steps survive update as well
+# - Deleted steps are restored on update, so make them empty instead of removing
+# - Do not add multiple jobs, only one job is supported
+# - This comment is user-editable and is not updated automatically
 
-on:
+name: Create Release Pull Request
+"on":
   release:
     types:
       - published
-  # remove manual dispatch if you do not need it
   workflow_dispatch:
-    tag:
-      description: "Release tag"
-      required: true
-
+    inputs:
+      tag:
+        description: Release tag
+        required: true
 jobs:
   release-new-version:
     runs-on: ubuntu-latest
@@ -19,9 +26,10 @@ jobs:
         uses: actions/github-script@v3
         id: release
         with:
+          github-actions-managed: true
           script: |
             let release = null;
-            if (context.payload.inputs && context.payload.inputs.number) {
+            if (context.payload.inputs && context.payload.inputs.tag) {
               const tagName = context.payload.inputs.tag;
               // find Pull Request by number fom input
               const releasesResponse = await github.repos.listReleases({
@@ -37,7 +45,7 @@ jobs:
             }
             if (context.payload.release){
               // get Release from event payload
-              pullRequest = context.payload.release;
+              release = context.payload.release;
             }
 
             if (!release) {
@@ -53,41 +61,47 @@ jobs:
             core.setOutput('name', release.name);
             core.setOutput('body', release.body);
             return true;
-      # Switch to Release target branch
       - name: Checkout Release target branch
-        if: "steps.release.outputs.result"
+        id: checkout
+        if: steps.release.outputs.result
         uses: actions/checkout@v2
         with:
+          github-actions-managed: true
           ref: ${{ steps.release.outputs.target }}
       - name: Update version
         id: version
-        if: "steps.release.outputs.result"
+        if: steps.release.outputs.result
         uses: vemel/nextversion@main
         with:
-          # replace version in package.json with release tag
+          github-actions-managed: true
+          github-actions-comment: Add paths where version needs to be updated to 'update'
           path: ./package.json
           type: semver
           result: ${{ steps.release.outputs.tag }}
-          # add extra paths to files where version should be updated
           update: |
             ./package.json
       - name: Add new release to CHANGELOG.md
         id: changelog
-        if: "steps.release.outputs.result"
+        if: steps.release.outputs.result
         uses: vemel/nextchange@main
         with:
+          github-actions-managed: true
           release: ${{ steps.version.outputs.result }}
           clear: true
           set: ${{ steps.release.outputs.body }}
       - name: Clear Unreleased in CHANGELOG.md
-        if: "steps.release.outputs.result"
+        id: clear-unreleased
+        if: steps.release.outputs.result
         uses: vemel/nextchange@main
         with:
+          github-actions-managed: true
           release: Unreleased
           clear: true
       - name: Commit changes
-        if: "steps.release.outputs.result"
+        id: commit
+        if: steps.release.outputs.result
         run: |
+          # github-actions-managed: true
           VERSION=${{ toJSON(steps.version.outputs.result) }}
           BRANCH=${{ toJSON(steps.release.outputs.branch) }}
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -96,9 +110,11 @@ jobs:
           git commit -am "Bump version to $VERSION"
           git push --set-upstream origin $BRANCH
       - name: Create Pull Request
+        id: create-pull-request
         uses: actions/github-script@v3
-        if: "steps.release.outputs.result"
+        if: steps.release.outputs.result
         with:
+          github-actions-managed: true
           script: |
             const response = await github.pulls.create({
               owner: context.repo.owner,
