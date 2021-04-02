@@ -10,7 +10,7 @@ export function bumpPrerelease(
 ): string {
     const parsed = new SemVer(version);
     let result = inc(version, release, preReleaseIdentifier) || version;
-    if (parsed.prerelease) {
+    if (parsed.prerelease.length) {
         if (
             release === "premajor" &&
             parsed.minor === 0 &&

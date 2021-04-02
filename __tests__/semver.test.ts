@@ -49,6 +49,18 @@ test("get results", async () => {
         result: "1.2.4-rc.1",
         "is-prerelease": true
     });
+    expect(getResults("1.2.0", true, "rc", "patch")).toStrictEqual({
+        input: "1.2.0",
+        major: "2.0.0-rc.1",
+        minor: "1.3.0-rc.1",
+        patch: "1.2.1-rc.1",
+        micro: "1.2.1-rc.1",
+        prerelease: "1.2.1-rc.1",
+        build: "1.2.0+1",
+        postrelease: "1.2.1-rc.1",
+        result: "1.2.1-rc.1",
+        "is-prerelease": true
+    });
     expect(getResults("1.2.3", false, "rc", "3.4.5")).toStrictEqual({
         input: "1.2.3",
         major: "2.0.0",
