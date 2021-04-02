@@ -13893,7 +13893,7 @@ const constants_1 = __nccwpck_require__(9042);
 function bumpPrerelease(version, release, preReleaseIdentifier) {
     const parsed = new semver_1.SemVer(version);
     let result = semver_1.inc(version, release, preReleaseIdentifier) || version;
-    if (parsed.prerelease) {
+    if (parsed.prerelease.length) {
         if (release === "premajor" &&
             parsed.minor === 0 &&
             parsed.patch === 0) {
