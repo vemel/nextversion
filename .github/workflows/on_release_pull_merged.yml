@@ -1,12 +1,15 @@
-# This workflow provided by GitHubActions.js project
-# Documentation: https://github.com/vemel/github_actions_js
+# This workflow provided by GitHub Actions for Node.js projects
+# Documentation: https://github.com/vemel/github_actions_js/blob/main/workflows/README.md
 #
-# --- How to modify this workflow and still get updates ---
-# - Set 'github-actions-managed' to false on manual edit to prevent step overwrite on update
-# - User-added steps survive update as well
-# - Deleted steps are restored on update, so make them empty instead of removing
-# - Do not add multiple jobs, only one job is supported
-# - This comment is user-editable and is not updated automatically
+# - Runs only if `NPM_TOKEN` secret is set
+# - Starts on Pull Request merge for `release/*` branch
+# - Uses Pull Request branch for deployment, so released version contains only changes
+#   from base branch when Release had been published
+# - Builds package if `build` script is available in `package.json`
+# - Publishes new version to [npm](https://www.npmjs.com/)
+#
+# Secrets:
+#   NPM_TOKEN - Token for npm publishing https://docs.npmjs.com/creating-and-viewing-access-tokens
 
 name: Publish to NPM
 "on":
@@ -22,22 +25,13 @@ jobs:
   publish-to-npm:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Secrets
-        id: secrets
-        uses: actions/github-script@v3
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        with:
-          github-actions-managed: true
-          script: |
-            process.env.NPM_TOKEN && core.setOutput("NPM_TOKEN", true);
       - name: Get Pull Request
         id: pull-request
-        if: steps.secrets.outputs.NPM_TOKEN
+        if: env.NPM_TOKEN
         uses: actions/github-script@v3
         with:
-          github-actions-managed: true
           script: |
+            // github-actions-managed: true
             let pullRequest = null;
             if (context.payload.inputs && context.payload.inputs.number) {
               // find Pull Request by number fom input
@@ -87,15 +81,15 @@ jobs:
         if: steps.pull-request.outputs.result
         uses: actions/checkout@v2
         with:
-          github-actions-managed: true
           ref: ${{ steps.pull-request.outputs.base }}
+          github-actions-managed: true
       - name: Get available scripts
         id: scripts
         if: steps.pull-request.outputs.result
         uses: actions/github-script@v3
         with:
-          github-actions-managed: true
           script: |
+            // github-actions-managed: true
             const { promisify } = require('util');
             const exec = promisify(require('child_process').exec);
 
@@ -113,9 +107,9 @@ jobs:
         id: setup-node
         if: steps.pull-request.outputs.result
         with:
-          github-actions-managed: true
           registry-url: https://registry.npmjs.org/
           node-version: 14
+          github-actions-managed: true
       - name: Install package
         id: install
         if: steps.pull-request.outputs.result
@@ -140,3 +134,4 @@ jobs:
           npm publish --access public --verbose
     env:
       BUILD_SCRIPT: build
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

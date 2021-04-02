@@ -1,12 +1,11 @@
-# This workflow provided by GitHubActions.js project
-# Documentation: https://github.com/vemel/github_actions_js
+# This workflow provided by GitHub Actions for Node.js projects
+# Documentation: https://github.com/vemel/github_actions_js/blob/main/workflows/README.md
 #
-# --- How to modify this workflow and still get updates ---
-# - Set 'github-actions-managed' to false on manual edit to prevent step overwrite on update
-# - User-added steps survive update as well
-# - Deleted steps are restored on update, so make them empty instead of removing
-# - Do not add multiple jobs, only one job is supported
-# - This comment is user-editable and is not updated automatically
+# - Starts on Pull Request merge for non-`release/*` branch
+# - Creates or updates a Release draft for Pull Request base branch
+# - Release draft notes are merged from existing notes and Pull Request notes
+# - Each entry added from Pull Request notes contains a link to the Pull Request
+# - Release draft suggested version is based on Release notes
 
 name: Update Release from Pull Request
 "on":
@@ -26,8 +25,8 @@ jobs:
         uses: actions/github-script@v3
         id: pull-request
         with:
-          github-actions-managed: true
           script: |
+            // github-actions-managed: true
             let pullRequest = null;
             if (context.payload.inputs && context.payload.inputs.number) {
               const number = context.payload.inputs.number;
@@ -78,24 +77,23 @@ jobs:
         if: steps.pull-request.outputs.result
         uses: actions/checkout@v2
         with:
-          github-actions-managed: true
           ref: ${{ steps.pull-request.outputs.base }}
+          github-actions-managed: true
       - name: Get Unreleased notes
         id: unreleased
         if: steps.pull-request.outputs.result
-        uses: vemel/nextchange@main
+        uses: vemel/nextchange@0.1.0
         with:
-          github-actions-managed: true
-          github-actions-comment: Get Unreleased section of CHANGELOG.md to set as notes of a newly created Release draft
           get: Unreleased
           sanitize: true
+          github-actions-managed: true
       - name: Get or create Release draft
         uses: actions/github-script@v3
         id: release
         if: steps.pull-request.outputs.result
         with:
-          github-actions-managed: true
           script: |
+            // github-actions-managed: true
             let release = null;
             const baseBranch = ${{ toJSON(steps.pull-request.outputs.base) }};
 
@@ -135,31 +133,29 @@ jobs:
       - name: Build Release notes
         id: notes
         if: steps.pull-request.outputs.result
-        uses: vemel/nextchange@main
+        uses: vemel/nextchange@0.1.0
         with:
-          github-actions-managed: true
-          github-actions-comment: Merge Pull Request notes to Release notes and add link to this PR
           set: ${{ steps.release.outputs.body }}
           append: ${{ steps.pull-request.outputs.body }}
           suffix: ${{ steps.pull-request.outputs.suffix }}
+          github-actions-managed: true
       - name: Get suggested version
         id: version
         if: steps.pull-request.outputs.result
-        uses: vemel/nextversion@main
+        uses: vemel/nextversion@0.1.1
         with:
-          github-actions-managed: true
-          github-actions-comment: Release draft will be an RC, use 'stable' instead if needed
           path: ./package.json
           type: semver
           release: rc
           result: ${{ steps.notes.outputs.label }}
+          github-actions-managed: true
       - name: Update release draft
         uses: actions/github-script@v3
         id: update-release
         if: steps.pull-request.outputs.result
         with:
-          github-actions-managed: true
           script: |
+            // github-actions-managed: true
             const releaseId = ${{ steps.release.outputs.id }};
             core.info(`Release ID: ${releaseId}`);
 
@@ -190,8 +186,8 @@ jobs:
         uses: actions/github-script@v3
         if: steps.pull-request.outputs.result
         with:
-          github-actions-managed: true
           script: |
+            // github-actions-managed: true
             const issueNumber = ${{ steps.pull-request.outputs.number }};
             const version = ${{ toJSON(steps.version.outputs.result) }};
             const response = await github.issues.createComment({
