@@ -1,6 +1,6 @@
 {
   "name": "ghactions-next-version",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "Format, bump, and update a version of Node.js and Python packages",
   "main": "dist/index.js",
