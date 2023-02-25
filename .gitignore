@@ -94,5 +94,6 @@ typings/
 
 # Text editor files
 .vscode/
+.idea/
 
 secrets.env

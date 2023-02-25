@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Release
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         id: release
         with:
           script: |
@@ -128,7 +128,7 @@ jobs:
           git push --set-upstream origin $BRANCH
       - name: Create Pull Request
         id: create-pull-request
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             // github-actions-managed: true

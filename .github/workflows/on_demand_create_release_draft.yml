@@ -32,7 +32,7 @@ jobs:
           get: Unreleased
           sanitize: true
       - name: Get or create Release draft
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         id: release
         with:
           script: |
@@ -91,7 +91,7 @@ jobs:
           result: ${{ steps.notes.outputs.label }}
       - name: Update release draft
         id: update-release
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             // github-actions-managed: true

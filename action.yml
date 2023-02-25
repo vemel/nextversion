@@ -7,7 +7,7 @@ inputs:
     default: ""
     required: false
   version:
-    description: Current version to bump, use path isntead if possible
+    description: Current version to bump, use path instead if possible
     default: "0.0.0"
     required: false
   type:
@@ -54,7 +54,7 @@ outputs:
   raw-input:
     description: "Raw string input"
 runs:
-  using: "node12"
+  using: "node16"
   main: "dist/index.js"
 branding:
   icon: "tag"

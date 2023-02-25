@@ -28,7 +28,7 @@ jobs:
       - name: Get Pull Request
         id: pull-request
         if: env.NPM_TOKEN
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             // github-actions-managed: true
@@ -86,7 +86,7 @@ jobs:
       - name: Get available scripts
         id: scripts
         if: steps.pull-request.outputs.result
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             // github-actions-managed: true

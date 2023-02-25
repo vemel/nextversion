@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Pull Request
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         id: pull-request
         with:
           script: |
@@ -66,7 +66,7 @@ jobs:
           set: ${{ steps.pull-request.outputs.body }}
       - name: Update Pull Request labels
         id: update-labels
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             // github-actions-managed: true

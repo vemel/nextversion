@@ -27,7 +27,7 @@ jobs:
       RELEASE_TYPE: rc
     steps:
       - name: Get Pull Request
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         id: pull-request
         with:
           script: |
@@ -93,7 +93,7 @@ jobs:
           get: Unreleased
           sanitize: true
       - name: Get or create Release draft
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         id: release
         if: steps.pull-request.outputs.result
         with:
@@ -155,7 +155,7 @@ jobs:
           release: ${{ env.RELEASE_TYPE }}
           result: ${{ steps.notes.outputs.label }}
       - name: Update release draft
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         id: update-release
         if: steps.pull-request.outputs.result
         with:
@@ -188,7 +188,7 @@ jobs:
             core.info(`Release URL: ${response.data.html_url}`);
       - name: Add comment to Pull Request
         id: add-comment
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         if: steps.pull-request.outputs.result
         with:
           script: |
