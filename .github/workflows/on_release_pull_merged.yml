@@ -96,7 +96,7 @@ jobs:
             const scripts = output.split(/\r?\n/)
               .filter(line => line.startsWith('  ') && !line.startsWith('   '))
               .map(line => line.trim());
-e
+
             if (scripts.includes(process.env.BUILD_SCRIPT)) {
               core.setOutput('build', process.env.BUILD_SCRIPT);
             }
