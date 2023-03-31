@@ -47,7 +47,7 @@ function updatePath(
     oldVersion: string,
     newVersion: string,
     path: string,
-    encoding: string
+    encoding: BufferEncoding
 ): void {
     core.debug(`Updating path ${path}`);
     if (!fs.existsSync(path)) {
@@ -70,7 +70,7 @@ async function run(): Promise<void> {
     try {
         let version = core.getInput(Inputs.Version) || "";
         const versionPath = core.getInput(Inputs.VersionPath) || "";
-        const encoding = core.getInput(Inputs.Encoding) || "utf-8";
+        const encoding = (core.getInput(Inputs.Encoding) || "utf-8") as BufferEncoding;
         const versionType = (
             core.getInput(Inputs.Type) || VersionType.SemVer
         ).toLowerCase();
@@ -103,7 +103,11 @@ async function run(): Promise<void> {
             updatePath(version, result, path, encoding);
         }
     } catch (error) {
-        core.setFailed(error.message);
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        } else {
+            core.setFailed(`${error}`);
+        }
     }
 }
 
