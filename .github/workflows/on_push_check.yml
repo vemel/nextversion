@@ -36,7 +36,7 @@ jobs:
             // github-actions-managed: true
             const { promisify } = require('util');
 
-            const output = (await exec('npm run')).stdout;
+            const output = (await exec.exec('npm run')).stdout;
             const scripts = output.split(/\r?\n/)
               .filter(line => line.startsWith('  ') && !line.startsWith('   '))
               .map(line => line.trim());
