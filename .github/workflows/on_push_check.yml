@@ -35,7 +35,6 @@ jobs:
           script: |
             // github-actions-managed: true
             const { promisify } = require('util');
-            const exec = promisify(require('child_process').exec);
 
             const output = (await exec('npm run')).stdout;
             const scripts = output.split(/\r?\n/)
