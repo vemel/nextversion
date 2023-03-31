@@ -102,13 +102,12 @@ jobs:
             }
             return true;
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         id: setup-node
         if: steps.pull-request.outputs.result
         with:
           github-actions-managed: true
-          registry-url: https://registry.npmjs.org/
-          node-version: 14
+          node-version: 18
       - name: Install package
         id: install
         if: steps.pull-request.outputs.result
