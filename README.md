@@ -21,7 +21,7 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 | Name | Default | Description |
 | - | - | - |
 | `path` | `""` | Path to file that contains current version, e.g `package.json`, `pyproject.toml`, `setup.cfg`, `version.txt` |
-| `version` | `"0.0.0"` | Current version to bump, use `path` isntead if possible |
+| `version` | `"0.0.0"` | Current version to bump, use `path` instead if possible |
 | `type` | `"semver"` | Version type: `semver` or `pep440` |
 | `release` | `"stable"` | Release type: `stable` `rc`, `alpha` or `beta` |
 | `result` | `"patch"` | Version to set as `result`: `major`, `minor`, `patch`, `micro`, `prerelease`, `build`, `postrelease`, or explicit version |

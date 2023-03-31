@@ -25,12 +25,12 @@ jobs:
     steps:
       - name: Checkout current branch
         id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           github-actions-managed: true
       - name: Get available scripts
         id: scripts
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             // github-actions-managed: true

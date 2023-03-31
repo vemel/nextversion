@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Release
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         id: release
         with:
           script: |
@@ -67,13 +67,13 @@ jobs:
             return true;
       - name: Checkout Release target branch
         id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           github-actions-managed: true
           ref: ${{ steps.release.outputs.target }}
       - name: Get new version
         id: version
-        uses: vemel/nextversion@0.1.1
+        uses: vemel/nextversion@latest
         with:
           github-actions-managed: true
           path: ./package.json
@@ -87,7 +87,7 @@ jobs:
           npm version ${{ steps.version.outputs.result }} --allow-same-version
       - name: Add new release to CHANGELOG.md
         id: changelog
-        uses: vemel/nextchange@0.1.0
+        uses: vemel/nextchange@latest
         with:
           github-actions-managed: true
           release: ${{ steps.version.outputs.result }}
@@ -96,7 +96,7 @@ jobs:
       - name: Clear Unreleased in CHANGELOG.md
         id: clear-unreleased
         if: ${{ steps.version.outputs.is-prerelease == 'false' }}
-        uses: vemel/nextchange@0.1.0
+        uses: vemel/nextchange@latest
         with:
           github-actions-managed: true
           release: Unreleased
@@ -128,7 +128,7 @@ jobs:
           git push --set-upstream origin $BRANCH
       - name: Create Pull Request
         id: create-pull-request
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             // github-actions-managed: true

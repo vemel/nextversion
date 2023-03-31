@@ -27,7 +27,7 @@
   "author": "Vlad Emelianov",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.6",
+    "@actions/core": "^1.10.0",
     "@renovate/pep440": "^1.0.0",
     "semver": "^7.3.5"
   },
