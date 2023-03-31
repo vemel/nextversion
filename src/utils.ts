@@ -4,7 +4,10 @@ const RE_SETUP_PY = /_*version_*\s*=\s*['"]+([^'"]+)['"]+/m;
 const RE_SETUP_CFG = /^version\s*=\s*(\S+)/m;
 const RE_PYPROJECT_TOML = /^version\s*=\s*['"]([^'"]+)['"]/m;
 
-export function getVersionFromPath(path: string, encoding: BufferEncoding): string {
+export function getVersionFromPath(
+    path: string,
+    encoding: BufferEncoding
+): string {
     const data = fs.readFileSync(path, { encoding });
     if (path.toLowerCase().endsWith(".json")) {
         return JSON.parse(data).version;

@@ -70,7 +70,8 @@ async function run(): Promise<void> {
     try {
         let version = core.getInput(Inputs.Version) || "";
         const versionPath = core.getInput(Inputs.VersionPath) || "";
-        const encoding = (core.getInput(Inputs.Encoding) || "utf-8") as BufferEncoding;
+        const encoding = (core.getInput(Inputs.Encoding) ||
+            "utf-8") as BufferEncoding;
         const versionType = (
             core.getInput(Inputs.Type) || VersionType.SemVer
         ).toLowerCase();
